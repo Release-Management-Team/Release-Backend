@@ -7,7 +7,7 @@ class Book(models.Model):
     available   = models.BooleanField()
     tags        = models.ManyToManyField('BookTag', related_name='books', blank=True)
     donor       = models.ForeignKey('members.Member', models.PROTECT, blank=True, null=True)
-    image       = models.CharField(max_length=10, null=True)
+    image       = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -20,7 +20,7 @@ class BookRecord(models.Model):
     
 
 class BookTag(models.Model):
-    tag = models.CharField(max_length=100, unique=True)
+    tag = models.CharField(primary_key=True, max_length=100, unique=True)
 
     def __str__(self):
         return f'#{self.tag}'

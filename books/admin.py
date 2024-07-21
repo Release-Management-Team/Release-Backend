@@ -1,3 +1,4 @@
 from django.contrib import admin
+from .models import Book, BookRecord, BookTag
 
-# Register your models here.
+admin.site.register([Book, BookRecord, BookTag])
