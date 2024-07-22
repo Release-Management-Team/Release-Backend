@@ -9,6 +9,9 @@ class Book(models.Model):
     donor       = models.ForeignKey('members.Member', models.PROTECT, blank=True, null=True)
     image       = models.CharField(max_length=10, blank=True)
 
+    def to_json(self, fields):
+        return {field.name: field.value_from_object(self) for field in self._meta.get_fields() if field.name in fields}
+    
     def __str__(self):
         return f'{self.name}'
 
