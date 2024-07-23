@@ -2,6 +2,7 @@ import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core import serializers
 from django.views.decorators.http import require_http_methods
+from pkg_resources import require
 
 from .models import Book, BookRecord, BookTag
 
@@ -21,3 +22,15 @@ def book_info(request: HttpRequest):
         return HttpResponse(status=400)
     
     return JsonResponse(books[0].to_json(['id', 'name', 'available', 'tags', 'donor', 'image']))
+
+@require_http_methods(['POST'])
+def borrow_book(request: HttpRequest):
+    pass
+
+@require_http_methods(['POST'])
+def return_book(request: HttpRequest):
+    pass
+
+@require_http_methods(['GET'])
+def borrowed_books(request: HttpRequest):
+    pass
