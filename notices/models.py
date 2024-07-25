@@ -5,3 +5,9 @@ class Notice(models.Model):
     content  = models.CharField(max_length=1000)
     date     = models.DateTimeField()
     
+    def to_json(self):
+        return {
+            "title": self.title,
+            "content": self.content,
+            "date": self.date,
+        }
