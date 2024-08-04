@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponseForbidden, HttpResponseBadRequest
 
 from members.models import Member
 
@@ -23,19 +23,18 @@ def check_access_token(func):
         except:
             return HttpResponseForbidden()
         
-        if payload['token_type'] == 'REFRESH' or payload['exp'] < datetime.datetime.now():
+        if payload['token_type'] == 'REFRESH' or payload['exp'] < int(datetime.datetime.now().timestamp()):
             return HttpResponseForbidden()
-        
-        return func(request, payload, *args, **kwargs)
+
+        return func(payload, *args, **kwargs)
     
     return decorated
 
 
 
 def use_member(func):
-    def decorated(request, payload, *args, **kwargs):
-        member = Member.objects.filter(id=payload['id'])
-
-        return func(request, member, *args, **kwargs)
+    def decorated(payload, *args, **kwargs):
+        member = Member.objects.filter(id=payload['id'])  
+        return func(member, *args, **kwargs)
     
     return decorated

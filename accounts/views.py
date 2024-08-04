@@ -17,7 +17,7 @@ def validate_access(request):
     Return: 200 response / 403 response    
     """
 
-    return HttpResponse('Success')
+    return HttpResponse(200)
 
 
 
