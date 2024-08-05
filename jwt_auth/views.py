@@ -1,11 +1,15 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
+from django.contrib.auth.hashers import make_password, check_password
+
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
 from members.models import Member
 
 from .tokens import *
 from .decorator import *
+
+import bcrypt
 
 
 @require_http_methods(['GET'])
@@ -32,15 +36,22 @@ def login(request):
     id = request.POST.get('id')
     pw = request.POST.get('password')
 
-    member = Member.objects.filter(id=id, password=pw)
+    member = Member.objects.get(id=id)
 
     if not member:
         return HttpResponse('Unauthorized', status=401) 
-   
-    access_token = create_access_token(member['id'])
+
+    decoded = member.password.tobytes()
+    if not bcrypt.checkpw(pw.encode('utf-8'), decoded):
+        return HttpResponse('Unauthorized', status=401) 
+
+    access_token = create_access_token(member.id)
     refresh_token = create_refresh_token()
 
-    return access_token, refresh_token
+    return JsonResponse({
+        'access_token': access_token, 
+        'refresh_token': refresh_token
+    })
 
 
 @require_http_methods(['GET'])
@@ -51,8 +62,8 @@ def refresh_token(request):
     Return: New access, refresh token / 401 response
     """
 
-    old_access_token = request.header.get('Authorization')
-    old_refresh_token = request.header.get('X-Refresh_Token')
+    old_access_token = request.headers.get('Authorization')
+    old_refresh_token = request.headers.get('X-Refresh_Token')
 
     if not old_access_token or not old_refresh_token:
         return HttpResponse('Unauthorized', status=401)
@@ -62,9 +73,13 @@ def refresh_token(request):
 
     id = get_id_from_access_token(old_access_token)
     if id == -1:
-        return HttpResponseNotFound()
+        print(id)
+        return HttpResponseBadRequest()
 
     access_token = create_access_token(id)
     refresh_token = create_refresh_token()
     
-    return access_token, refresh_token
+    return JsonResponse({
+        'access_token': access_token, 
+        'refresh_token': refresh_token
+    })

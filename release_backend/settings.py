@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'members',
     'activities',
     'notices',
-    'accounts'
+    'jwt_auth'
 ]
 
 MIDDLEWARE = [
@@ -95,6 +95,10 @@ DATABASES = {
     }
 }
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',  # bcrypt 사용 설정
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # 기본 pbkdf2 사용
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
