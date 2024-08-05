@@ -1,0 +1,24 @@
+name: Deploy the app to development server
+on:
+  push:
+    branches: ["deploy-dev"]
+  
+jobs:
+  CI-CD:
+    runs-on: self-hosted dev
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v4
+      
+      - name: Shut down previous contatiner
+        run: docker compose down
+      
+      - name: Delete previous docker image
+        continue-on-error: true
+        run: docker image rm release_backend
+
+      - name: Build new docker image
+        run: docker build --tag release_backend .
+
+      - name: Start docker container using new image
+        run: docker compose up
