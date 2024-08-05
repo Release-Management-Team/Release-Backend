@@ -1,17 +1,21 @@
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.core import serializers
 from django.views.decorators.http import require_http_methods
-# from pkg_resources import require
 
+from members.models import Member
 from .models import Book, BookRecord, BookTag
 
+from jwt_auth.decorator import check_access_token, use_member
+
 @require_http_methods(['GET'])
+@check_access_token
 def book_list(request: HttpRequest):
     data = [book.to_json(['id', 'name', 'available', 'image']) for book in Book.objects.all()]
     return JsonResponse({'books': data})
 
+
 @require_http_methods(['GET'])
+@check_access_token
 def book_info(request: HttpRequest):
     body = json.loads(request.body)
     
@@ -23,8 +27,12 @@ def book_info(request: HttpRequest):
     
     return JsonResponse(books[0].to_json(['id', 'name', 'available', 'tags', 'donor', 'image']))
 
+
 @require_http_methods(['POST'])
-def borrow_book(request: HttpRequest):
+@check_access_token
+@use_member
+def borrow_book(request: HttpRequest, member: Member):
+    # book = Book.objects.get(id=)
     pass
 
 @require_http_methods(['POST'])
