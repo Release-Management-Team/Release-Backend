@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth.hashers import make_password, check_password
 
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
@@ -9,7 +8,7 @@ from members.models import Member
 from .tokens import *
 from .decorator import *
 
-import bcrypt
+import bcrypt, json
 
 
 @require_http_methods(['GET'])
@@ -33,12 +32,14 @@ def login(request):
     Return: New access token, refresh token / 401 response
     """
 
-    id = request.POST.get('id')
-    pw = request.POST.get('password')
+    data = json.loads(request.body)
 
-    member = Member.objects.get(id=id)
+    id = data.get('id')
+    pw = data.get('password')
 
-    if not member:
+    try: 
+        member = Member.objects.get(id=id)
+    except Member.DoesNotExist:
         return HttpResponse('Unauthorized', status=401) 
 
     decoded = member.password.tobytes()
@@ -61,6 +62,7 @@ def refresh_token(request):
     Require: access token, refresh token 
     Return: New access, refresh token / 401 response
     """
+
 
     old_access_token = request.headers.get('Authorization')
     old_refresh_token = request.headers.get('X-Refresh_Token')

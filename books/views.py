@@ -2,7 +2,7 @@ import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core import serializers
 from django.views.decorators.http import require_http_methods
-from pkg_resources import require
+# from pkg_resources import require
 
 from .models import Book, BookRecord, BookTag
 
