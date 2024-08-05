@@ -1,0 +1,5 @@
+services:
+  django:
+    image: release_backend
+    pull_policy: never
+    
