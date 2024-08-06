@@ -25,7 +25,7 @@ jobs:
           python manage.py test
         env:
           SECRET_KEY: release
-          QR_CODE: release
+          QRCODE: release
           ACCESS_TOKEN_EXPIRE: 3
           REFRESH_TOKEN_EXPIRE: 30
 
