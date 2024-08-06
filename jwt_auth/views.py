@@ -42,7 +42,7 @@ def login(request):
     except Member.DoesNotExist:
         return HttpResponse('Unauthorized', status=401) 
 
-    decoded = member.password.tobytes()
+    decoded = member.password
     if not bcrypt.checkpw(pw.encode('utf-8'), decoded):
         return HttpResponse('Unauthorized', status=401) 
 
