@@ -5,6 +5,7 @@ from members.models import Member
 
 import jwt
 import datetime
+from functools import wraps
 
 def check_access_token(func):
     """ 
@@ -12,6 +13,7 @@ def check_access_token(func):
     If token type is wrong or token was expired, returns http 403 response
     """
 
+    @wraps(func)
     def decorated(request, *args, **kwargs):
         token = request.headers.get('Authorization')
 
@@ -26,15 +28,19 @@ def check_access_token(func):
         if payload['token_type'] == 'REFRESH' or payload['exp'] < int(datetime.datetime.now().timestamp()):
             return HttpResponseForbidden()
 
-        return func(payload, *args, **kwargs)
+        return func(request, **kwargs)
     
     return decorated
 
 
 
 def use_member(func):
-    def decorated(payload, *args, **kwargs):
-        member = Member.objects.filter(id=payload['id'])  
-        return func(member, *args, **kwargs)
+
+    @wraps(func)
+    def decorated(request, *args, **kwargs):
+        token = request.headers.get('Authorization')
+        id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
+        member = Member.objects.filter(id=id)  
+        return func(request, member=member, *args, **kwargs)
     
     return decorated
