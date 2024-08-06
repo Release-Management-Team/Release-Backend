@@ -25,7 +25,7 @@ jobs:
           python manage.py test
 
   Deploying:
-    runs-on: self-hosted dev
+    runs-on: [self-hosted, dev]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
