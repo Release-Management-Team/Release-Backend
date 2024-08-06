@@ -28,6 +28,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 ACCESS_TOKEN_EXPIRE = os.environ.get('ACCESS_TOKEN_EXPIRE')
 REFRESH_TOKEN_EXPIRE = os.environ.get('REFRESH_TOKEN_EXPIRE')
 
+# Environments
+QRCODE = os.environ.get('QRCODE')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
