@@ -23,6 +23,11 @@ jobs:
       - name: Run tests
         run: |
           python manage.py test
+        env:
+          SECRET_KEY: release
+          QR_CODE: release
+          ACCESS_TOKEN_EXPIRE: 3
+          REFRESH_TOKEN_EXPIRE: 30
 
   Deploying:
     runs-on: [self-hosted, dev]
@@ -40,10 +45,7 @@ jobs:
       - name: Setup .env file
         run: |
           echo "SECRET_KEY=$SECRET_KEY" >> .env
-          echo "PSQL_HOST=localhost" >> .env
-          echo "PSQL_DB=release" >> .env
-          echo "PSQL_USER=hyunsoo" >> .env
-          echo "PSQL_PWD=$PSQL_PWD_DEV" >> .env
+          echo "ENABLE_PSQL=FALSE" >> .env
           echo "QRCODE=release" >> .env
           echo "ACCESS_TOKEN_EXPIRE=1" >> .env
           echo "REFRESH_TOKEN_EXPIRE=180" >> .env
@@ -52,6 +54,6 @@ jobs:
         run: docker build --file dockerfile-dev --tag release_backend .
 
       - name: Start docker container using new image
-        run: docker compose -f docker-compose-dev.yml up
+        run: docker compose -f docker-compose-dev.yml up -d
         env:
           PSQL_PWD: ${{ secrets.PSQL_PWD_DEV }}
