@@ -5,7 +5,7 @@ from django.shortcuts import render
 from members.models import Member
 from .models import Notice
 
-from accounts.decorator import check_access_token, use_member
+from jwt_auth.decorator import check_access_token, use_member
 
 @check_access_token
 def notices(request: HttpRequest):

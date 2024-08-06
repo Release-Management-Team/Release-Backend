@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', include('books.urls')),
     path('auth/', include('jwt_auth.urls')),
+    path('notices/', include('notices.urls')),
 ]
