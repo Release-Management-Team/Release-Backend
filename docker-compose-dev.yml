@@ -2,4 +2,15 @@ services:
   django:
     image: release_backend
     pull_policy: never
+    ports:
+      - 8001:80
+  
+  postgres:
+    image: postgres
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=release
+      - POSTGRES_PASSWORD=${PSQL_PWD}
+      - POSTGRES_DB=release
     

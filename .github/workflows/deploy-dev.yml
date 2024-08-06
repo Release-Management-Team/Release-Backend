@@ -4,21 +4,54 @@ on:
     branches: ["deploy-dev"]
   
 jobs:
-  CI-CD:
+  Testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup python env
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.3
+      
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run tests
+        run: |
+          python manage.py test
+
+  Deploying:
     runs-on: self-hosted dev
     steps:
-      - name: Repository checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
       
       - name: Shut down previous contatiner
-        run: docker compose down
+        run: docker compose -f docker-compose-dev.yml down
       
       - name: Delete previous docker image
         continue-on-error: true
         run: docker image rm release_backend
 
+      - name: Setup .env file
+        run: |
+          echo "SECRET_KEY=$SECRET_KEY" >> .env
+          echo "PSQL_HOST=localhost" >> .env
+          echo "PSQL_DB=release" >> .env
+          echo "PSQL_USER=hyunsoo" >> .env
+          echo "PSQL_PWD=$PSQL_PWD_DEV" >> .env
+          echo "QRCODE=release" >> .env
+          echo "ACCESS_TOKEN_EXPIRE=1" >> .env
+          echo "REFRESH_TOKEN_EXPIRE=180" >> .env
+
       - name: Build new docker image
-        run: docker build --tag release_backend .
+        run: docker build --file dockerfile-dev --tag release_backend .
 
       - name: Start docker container using new image
-        run: docker compose up
+        run: docker compose -f docker-compose-dev.yml up
+        env:
+          PSQL_PWD: ${{ secrets.PSQL_PWD_DEV }}
