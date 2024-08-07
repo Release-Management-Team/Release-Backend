@@ -2,7 +2,7 @@ import json
 from django.test import TestCase
 
 from .models import Book, BookRecord, BookTag
-from tests.data_creators import create_member_data, create_book_data
+from tests.data_setup import create_member_data, create_book_data
 
 class BookTestCase(TestCase):
 

@@ -4,7 +4,7 @@ from django.test import TestCase
 from .models import Notice
 from members.models import Member
 
-from tests.data_creators import create_member_data, create_notice_data
+from tests.data_setup import create_member_data, create_notice_data
 
 class NoticeTestCase(TestCase):
     @classmethod

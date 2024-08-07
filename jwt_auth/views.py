@@ -6,10 +6,10 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from members.models import Member
 
 from .tokens import *
-from .decorator import *
+from .decorators import *
 
-import bcrypt, json
-
+from utils.decorators import use_body
+import bcrypt
 
 @require_http_methods(['GET'])
 @check_access_token
@@ -25,17 +25,16 @@ def validate_access(request):
 
 
 @require_http_methods(['POST'])
-def login(request):
+@use_body
+def login(request, body):
     """
     Case: both access, require token are invalid or expired
     Require: ID, password
     Return: New access token, refresh token / 401 response
     """
 
-    data = json.loads(request.body)
-
-    id = data.get('id')
-    pw = data.get('password')
+    id = body.get('id')
+    pw = body.get('password')
 
     try: 
         member = Member.objects.get(id=id)
