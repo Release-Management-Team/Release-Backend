@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 from members.models import Member
 from .models import Book, BookRecord, BookTag
 
-from jwt_auth.decorator import check_access_token, use_member
+from jwt_auth.decorators import check_access_token, use_member
 
 @require_http_methods(['GET'])
 @check_access_token

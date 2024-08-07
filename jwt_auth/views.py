@@ -6,10 +6,10 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from members.models import Member
 
 from .tokens import *
-from .decorator import *
+from .decorators import *
 
 from utils.decorators import use_body
-import bcrypt, json
+import bcrypt
 
 @require_http_methods(['GET'])
 @check_access_token
