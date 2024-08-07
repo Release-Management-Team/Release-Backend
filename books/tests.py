@@ -1,5 +1,5 @@
 import json
-from django.test import TestCase
+from django.test import TestCase, Client
 
 from .models import Book, BookRecord, BookTag
 from tests.data_setup import create_member_data, create_book_data
@@ -7,26 +7,22 @@ from tests.data_setup import create_member_data, create_book_data
 class BookTestCase(TestCase):
 
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         create_member_data()
+        response = Client().post('/auth/login', 
+                                    data=json.dumps({'id': '20231560', 'password': 'asdf5678'}), 
+                                    content_type='application/json')
+        cls.headers = {'Authorization': response.json()['access_token']}
 
     def setUp(self):
         Book.objects.all().delete()
         BookRecord.objects.all().delete()
         BookTag.objects.all().delete()
         create_book_data()
-
-        response = self.client.post('/auth/login', 
-                                    data=json.dumps({'id': '20231560', 'password': 'qwer1234'}), 
-                                    content_type='application/json')
         
-        self.headers = {'Authorization': response.json()['access_token']}
-
     def test_getting_book_list(self):
         response = self.client.get('/books/list', headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        body = response.json()
-        # print(body)
 
     def test_getting_book_info(self):
         response = self.client.get('/books/info?id=1', headers=self.headers)

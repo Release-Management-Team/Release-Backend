@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from members.models import Member
 from .models import Notice
 
-from jwt_auth.decorator import check_access_token, use_member
+from jwt_auth.decorators import check_access_token, use_member
 
 @check_access_token
 def notices(request: HttpRequest):
