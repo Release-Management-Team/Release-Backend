@@ -50,6 +50,9 @@ jobs:
           echo "QRCODE=release" >> .env
           echo "ACCESS_TOKEN_EXPIRE=1" >> .env
           echo "REFRESH_TOKEN_EXPIRE=180" >> .env
+          echo "DJANGO_SUPERUSER_USERNAME=release" >> .env
+          echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> .env
+          echo "DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com"
 
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
