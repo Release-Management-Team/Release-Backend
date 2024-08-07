@@ -43,6 +43,12 @@ jobs:
         continue-on-error: true
         run: docker image rm release_backend
 
+      - name: Setup .env file for django superuser
+        run: |
+            echo "DJANGO_SUPERUSER_USERNAME=release" >> .env
+            echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> .env
+            echo "DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com" >> .env
+
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
 
