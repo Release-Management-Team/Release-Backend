@@ -48,6 +48,8 @@ jobs:
             echo "DJANGO_SUPERUSER_USERNAME=release" >> .env
             echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> .env
             echo "DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com" >> .env
+        env:
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
 
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
@@ -56,4 +58,3 @@ jobs:
         run: docker compose -f docker-compose-dev.yml up -d
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
