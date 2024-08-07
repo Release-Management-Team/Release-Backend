@@ -40,7 +40,7 @@ def use_member(func):
     def decorated(request, *args, **kwargs):
         token = request.headers.get('Authorization')
         id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
-        member = Member.objects.filter(id=id)  
+        member = Member.objects.get(id=id)  
         return func(request, member=member, *args, **kwargs)
     
     return decorated
