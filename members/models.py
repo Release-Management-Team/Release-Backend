@@ -20,7 +20,7 @@ class Role:
     
 
 class Member(models.Model):
-    id          = models.IntegerField(primary_key=True)
+    id          = models.CharField(primary_key=True, max_length=12)
     name        = models.CharField(max_length=10)
     password    = models.BinaryField(max_length=100) # byte array encrypted by bcrpyt
     fcm_token   = models.CharField(null=True)
