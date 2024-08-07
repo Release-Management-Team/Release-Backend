@@ -9,4 +9,4 @@ RUN python -m pip install --upgrade pip && \
     python manage.py createsuperuser
 
 EXPOSE 80
-CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
+CMD python manage.py createsuperuser && python manage.py runserver 0.0.0.0:80
