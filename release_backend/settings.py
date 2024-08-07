@@ -28,10 +28,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 ACCESS_TOKEN_EXPIRE = os.environ.get('ACCESS_TOKEN_EXPIRE')
 REFRESH_TOKEN_EXPIRE = os.environ.get('REFRESH_TOKEN_EXPIRE')
 
+# Environments
+QRCODE = os.environ.get('QRCODE')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jinnysoo.iptme.org']
 
 
 # Application definition
@@ -80,20 +83,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'release_backend.wsgi.application'
 
+ENABLE_PSQL = os.environ.get('ENABLE_PSQL')
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PSQL_DB'),
-        'USER': os.environ.get('PSQL_USER'),
-        'PASSWORD': os.environ.get('PSQL_PWD'),
-        'HOST': os.environ.get('PSQL_HOST'),
-        'PORT': os.environ.get('PSQL_PORT')
+if ENABLE_PSQL == 'TRUE':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PSQL_DB'),
+            'USER': os.environ.get('PSQL_USER'),
+            'PASSWORD': os.environ.get('PSQL_PWD'),
+            'HOST': os.environ.get('PSQL_HOST'),
+            'PORT': os.environ.get('PSQL_PORT')
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',  # bcrypt 사용 설정

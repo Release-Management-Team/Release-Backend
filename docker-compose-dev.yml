@@ -2,4 +2,14 @@ services:
   django:
     image: release_backend
     pull_policy: never
-    
+    ports:
+      - 8001:80
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - ENABLE_PSQL=FALSE
+      - QRCODE=release
+      - ACCESS_TOKEN_EXPIRE=1
+      - REFRESH_TOKEN_EXPIRE=180
+      - DJANGO_SUPERUSER_USERNAME=release
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      - DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com        
