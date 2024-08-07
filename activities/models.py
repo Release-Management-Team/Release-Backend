@@ -27,5 +27,14 @@ class Project(models.Model):
     description = models.CharField(max_length=1000)
 
     def to_dict(self, fields):
-        return { name: self._meta.get_field(name).value_from_object(self) for name in fields }
+        data = {}
+        for name in fields:
+            if name == 'president':
+                data[name] = self.president.id
+            elif name == 'members':
+                data[name] = [member.id for member in self.members.all()]
+            else:
+                data[name] = self._meta.get_field(name).value_from_object(self)
+
+        return data
     
