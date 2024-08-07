@@ -6,6 +6,8 @@ from tests.data_setup import *
 
 from .models import Member
 
+from utils.encryption import checkpw
+
 # Create your tests here.
 class MemberTestCase(TestCase):
     def setUp(self):
@@ -66,7 +68,7 @@ class MemberTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         member = Member.objects.get(id='20201641')
-        self.assertTrue(bcrypt.checkpw(new_password.encode('utf-8'), member.password.tobytes()))
+        self.assertTrue(checkpw(new_password, member.password))
 
 
 

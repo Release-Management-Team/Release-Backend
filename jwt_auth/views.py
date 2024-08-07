@@ -9,7 +9,7 @@ from .tokens import *
 from .decorators import *
 
 from utils.decorators import use_body
-import bcrypt
+from utils.encryption import checkpw
 
 @require_http_methods(['GET'])
 @check_access_token
@@ -42,7 +42,7 @@ def login(request, body):
         return HttpResponse('Unauthorized', status=401) 
 
     decoded = member.password
-    if not bcrypt.checkpw(pw.encode('utf-8'), decoded):
+    if not checkpw(pw, decoded):
         return HttpResponse('Unauthorized', status=401) 
 
     access_token = create_access_token(member.id)

@@ -13,3 +13,5 @@ services:
       - DJANGO_SUPERUSER_USERNAME=release
       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
       - DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com        
+
+      
