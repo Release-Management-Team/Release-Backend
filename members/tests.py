@@ -64,7 +64,7 @@ class MemberTestCase(TestCase):
         data = {
             'password': new_password
         }
-        response = self.client.post('/members/change-password', headers=self.headers, data=data, content_type='application/json')
+        response = self.client.post('/members/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         member = Member.objects.get(id='20201641')
@@ -86,16 +86,17 @@ class MemberTestCase(TestCase):
         print('\nTesting get_member_profile...')
 
         id = '20231560'
-        data = {
-            'id': '20231560'
-        }
-        response = self.client.get('/member/member-profile', headers=self.headers, data=data, content_type='application/json')
+        response = self.client.get('/members/member-profile?id=20231560', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
         json_response = response.json()
-        member = Member.objects.values('id', 'name', 'state', 'role', 'message', 'image')
+        member = Member.objects.get(id=id)
         
-        print(json_response)
-        print(member)
+        self.assertEqual(member.id, json_response.get('id'))
+        self.assertEqual(member.name, json_response.get('name'))
+        self.assertEqual(member.message, json_response.get('message'))
+        self.assertEqual(member.image, json_response.get('image'))
+        self.assertEqual(member.state, json_response.get('state'))
+        self.assertEqual(member.role, json_response.get('role'))
         
         

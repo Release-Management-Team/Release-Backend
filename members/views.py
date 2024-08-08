@@ -1,10 +1,13 @@
 
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_http_methods
 
 from jwt_auth.decorators import *
 from utils.decorators import *
 from utils.encryption import hashpw
 
+
+@require_http_methods(['GET'])
 @check_access_token
 @use_member
 def get_my_profile(request, member):
@@ -20,7 +23,7 @@ def get_my_profile(request, member):
     })
 
 
-
+@require_http_methods(['POST'])
 @check_access_token
 @use_body
 @use_member
@@ -45,6 +48,7 @@ def update_my_profile(request, body, member):
         return HttpResponse(200)
 
 
+@require_http_methods(['POST'])
 @check_access_token
 @use_body
 @use_member
@@ -61,6 +65,7 @@ def change_password(request, body, member):
         return HttpResponse(200)
 
 
+@require_http_methods(['GET'])
 @check_access_token
 def get_members_list(request):
     profiles = Member.objects.values('id', 'name', 'state', 'role', 'message', 'image')    
@@ -71,10 +76,10 @@ def get_members_list(request):
     }, safe=False)
 
 
+@require_http_methods(['GET'])
 @check_access_token
-@use_body
-def get_member_profile(request, body):
-    id = body.get('id')
+def get_member_profile(request):
+    id = request.GET.get('id')
 
     try:
         member = Member.objects.get(id=id)
