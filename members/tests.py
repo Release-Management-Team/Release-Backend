@@ -82,5 +82,18 @@ class MemberTestCase(TestCase):
 
     def test_get_member_profile(self):
         print('\nTesting get_member_profile...')
-        pass
+
+        id = '20231560'
+        data = {
+            'id': '20231560'
+        }
+        response = self.client.get('/member/member-profile', headers=self.headers, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+        json_response = response.json()
+        member = Member.objects.values('id', 'name', 'state', 'role', 'message', 'image')
+        
+        print(json_response)
+        print(member)
+        
         

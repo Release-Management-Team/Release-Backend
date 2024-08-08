@@ -74,4 +74,18 @@ def get_members_list(request):
 @check_access_token
 @use_body
 def get_member_profile(request, body):
-    pass
+    id = body.get('id')
+
+    try:
+        member = Member.objects.get(id=id)
+    except Member.DoesNotExist:
+        return HttpResponseBadRequest()
+    
+    return JsonResponse({
+        'id': member.id,
+        'name': member.name,
+        'state': member.state,
+        'role': member.role,
+        'message': member.message,
+        'image': member.image
+    })
