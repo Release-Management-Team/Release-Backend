@@ -1,9 +1,9 @@
-import bcrypt
 
 from django.http import HttpResponse, JsonResponse
 
 from jwt_auth.decorators import *
 from utils.decorators import *
+from utils.encryption import hashpw
 
 @check_access_token
 @use_member
@@ -51,7 +51,7 @@ def update_my_profile(request, body, member):
 def change_password(request, body, member):
     try:
         pw = body.get('password')
-        encoded = bcrypt.hashpw(pw.encode('utf-8'), bcrypt.gensalt())
+        encoded = hashpw(pw)
         member.password = encoded
 
         member.save()

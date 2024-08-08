@@ -34,7 +34,7 @@ QRCODE = os.environ.get('QRCODE')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['jinnysoo.iptme.org']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
