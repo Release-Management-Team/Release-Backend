@@ -4,7 +4,7 @@ on:
     branches: ["deploy-dev"]
   
 jobs:
-  Testing:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,9 +29,9 @@ jobs:
           ACCESS_TOKEN_EXPIRE: 3
           REFRESH_TOKEN_EXPIRE: 30
 
-  Deploying:
+  Deploy:
     runs-on: [self-hosted, dev]
-    needs: [Testing]
+    needs: [Test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
