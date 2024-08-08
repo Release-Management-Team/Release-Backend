@@ -1,5 +1,6 @@
 import json
 from django.test import TestCase, Client
+from django.conf import settings
 
 from .models import Book, BookRecord, BookTag
 from tests.data_setup import create_member_data, create_book_data
@@ -25,30 +26,31 @@ class BookTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_getting_book_info(self):
-        response = self.client.get('/book/info?id=1', headers=self.headers)
+        response = self.client.get('/book/info?id=1' , headers=self.headers)
         self.assertEqual(response.status_code, 200)
     
     def test_borrowing_book(self):
-        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': 'release'}, content_type='application/json')
+        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
         self.assertEqual(response.status_code, 200)
    
         book = Book.objects.get(id='1')
         self.assertFalse(book.available)
 
     def test_returning_book(self):
-        self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': 'release'}, content_type='application/json')
-        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': 'release'}, content_type='application/json')
+        self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
+        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         book = Book.objects.get(id='1')
         self.assertTrue(book.available)
         
     def test_returning_invalid_book(self):
-        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': 'release'}, content_type='application/json')
+        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_getting_borrowing_books(self):
-        self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': 'release'}, content_type='application/json')
+        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
         response = self.client.get('/book/borrowing', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
