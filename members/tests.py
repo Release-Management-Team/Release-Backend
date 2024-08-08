@@ -29,7 +29,7 @@ class MemberTestCase(TestCase):
     def test_get_my_profile(self):
         print('\nTesting get_my_profile...')
 
-        response = self.client.get('/members/my-profile', headers=self.headers)
+        response = self.client.get('/member/my-profile', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
         json_response = response.json()
@@ -47,7 +47,7 @@ class MemberTestCase(TestCase):
             'message': 'you cracked',
             'image': 'imagine'
         }
-        response = self.client.post('/members/update-profile', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.post('/member/update-profile', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         member = Member.objects.get(id='20201641')
@@ -64,7 +64,7 @@ class MemberTestCase(TestCase):
         data = {
             'password': new_password
         }
-        response = self.client.post('/members/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.post('/member/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         member = Member.objects.get(id='20201641')
@@ -75,7 +75,7 @@ class MemberTestCase(TestCase):
     def test_get_members_list(self):
         print('\nTesting get_members_list...')
 
-        response = self.client.get('/members/member-list', headers=self.headers)
+        response = self.client.get('/member/member-list', headers=self.headers)
         json_response = response.json()
         profiles = json_response.get('profiles')
         for i in profiles:
@@ -86,7 +86,7 @@ class MemberTestCase(TestCase):
         print('\nTesting get_member_profile...')
 
         id = '20231560'
-        response = self.client.get('/members/member-profile?id=20231560', headers=self.headers)
+        response = self.client.get('/member/member-profile?id=20231560', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
         json_response = response.json()

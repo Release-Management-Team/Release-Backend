@@ -21,13 +21,13 @@ class NoticeTestCase(TestCase):
         create_notice_data()
     
     def test_getting_notices(self):
-        response = self.client.get('/notices/list', headers=self.headers)
+        response = self.client.get('/notice/list', headers=self.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()['notices']), 2)
     
     def test_uploading_fcm_token(self):
         token = 'abcde'
-        response = self.client.post('/notices/upload-fcm-token', headers=self.headers, data={'fcm_token': token}, content_type='application/json')
+        response = self.client.post('/notice/upload-fcm-token', headers=self.headers, data={'fcm_token': token}, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         me = Member.objects.get(id='20231560')
