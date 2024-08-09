@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import Study, Project
+from .models import Event, Study, Project
 
-admin.site.register([Study, Project])
+admin.site.register([Event, Study, Project])

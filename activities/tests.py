@@ -23,6 +23,7 @@ class ActivityTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
+        print(data)
         self.assertEqual(len(data['studies']), 2)
 
     def test_getting_projects(self):
