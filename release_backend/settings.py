@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'release_backend.wsgi.application'
 
 ENABLE_PSQL = os.environ.get('ENABLE_PSQL')
 
-if ENABLE_PSQL == 'TRUE':
+if ENABLE_PSQL.lower() == 'true':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',

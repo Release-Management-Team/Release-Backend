@@ -43,18 +43,60 @@ jobs:
         continue-on-error: true
         run: docker image rm release_backend
 
-      - name: Setup .env file for django superuser
+      - name: Create dockerfile
         run: |
-            echo "DJANGO_SUPERUSER_USERNAME=release" >> .env
-            echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> .env
-            echo "DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com" >> .env
-        env:
-          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          cat <<EOF > dockerfile-dev
+          FROM python:3.11.3
+          ARG DJANGO_SUPERUSER_USERNAME
+          ARG DJANGO_SUPERUSER_PASSWORD
+          ARG DJANGO_SUPERUSER_EMAIL
+          WORKDIR /app
+          COPY requirements.txt ./
+          RUN python -m pip install --upgrade pip
+          RUN pip install -r requirements.txt
+          RUN python manage.py migrate --run-syncdb
+          RUN python manage.py createsuperuser --no-input
+          COPY . .
+          EXPOSE 80
+          CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
+          EOF
 
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
+        env:
+          DJANGO_SUPERUSER_USERNAME: release
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          DJANGO_SUPERUSER_EMAIL: sogangrelease@gmail.com
 
-      - name: Start docker container using new image
-        run: docker compose -f docker-compose-dev.yml up -d
+      - name: Create docker compose file
+        run: |
+          cat <<EOF > docker-compose-dev.yml
+          services:
+            django:
+              image: release_backend
+              pull_policy: never
+              ports:
+                - 8000:80
+              environments:
+                - SECRET_KEY=${SECRET_KEY}
+                - ENABLE_PSQL=true
+                - PSQL_HOST=postgres
+                - PSQL_PORT=5432
+                - PSQL_DB=release
+                - PSQL_USER=release
+                - PSQL_PWD=release
+                - QRCODE=release
+                - ACCESS_TOKEN_EXPIRE=3
+                - REFRESH_TOKEN_EXPIRE=30
+
+            postgres:
+              image: postgres
+              environments:
+                - POSTGRES_USER=release
+                - POSTGRES_PASSWORD=release
+          EOF
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      
+      - name: Start docker container using new image
+        run: docker compose -f docker-compose-dev.yml up -d
