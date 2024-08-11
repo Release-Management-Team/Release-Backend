@@ -46,7 +46,7 @@ jobs:
               pull_policy: never
               ports:
                 - 8000:80
-              environments:
+              environment:
                 - SECRET_KEY=${SECRET_KEY}
                 - ENABLE_PSQL=true
                 - PSQL_HOST=postgres
@@ -60,7 +60,7 @@ jobs:
 
             postgres:
               image: postgres
-              environments:
+              environment:
                 - POSTGRES_USER=release
                 - POSTGRES_PASSWORD=release
           EOF
