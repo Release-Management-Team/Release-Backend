@@ -84,8 +84,8 @@ jobs:
       - name: Create dockerfile
         run: |
           cat <<EOF > start.sh
-          python manage.py migrate --run-syncdb
-          python manage.py createsuperuser --no-input
+          python manage.py migrate --run-syncdb > migration.log
+          python manage.py createsuperuser --no-input > createsuperuser.log
           python manage.py runserver 0.0.0.0:80 > server.log
           EOF
           cat <<EOF > dockerfile-dev
