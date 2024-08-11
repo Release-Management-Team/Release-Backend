@@ -25,6 +25,7 @@ jobs:
           python manage.py test
         env:
           SECRET_KEY: release
+          ENABLE_PSQL: false
           QRCODE: release
           ACCESS_TOKEN_EXPIRE: 3
           REFRESH_TOKEN_EXPIRE: 30
@@ -36,25 +37,79 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Create docker compose file
+        run: |
+          cat <<EOF > docker-compose-dev.yml
+          services:
+            django:
+              image: release_backend
+              pull_policy: never
+              depends_on: 
+                postgres:
+                  condition: service_healthy
+                  restart: true
+              ports:
+                - 8000:80
+              environment:
+                - SECRET_KEY=${SECRET_KEY}
+                - ENABLE_PSQL=true
+                - PSQL_HOST=postgres
+                - PSQL_PORT=5432
+                - PSQL_DB=release
+                - PSQL_USER=release
+                - PSQL_PWD=release
+                - QRCODE=release
+                - ACCESS_TOKEN_EXPIRE=3
+                - REFRESH_TOKEN_EXPIRE=30
+                - DJANGO_SUPERUSER_USERNAME=release
+                - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+                - DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com
+
+            postgres:
+              image: postgres
+              healthcheck:
+                test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+                interval: 10s
+                retries: 5
+                start_period: 30s
+                timeout: 10s
+              environment:
+                - POSTGRES_USER=release
+                - POSTGRES_DB=release
+                - POSTGRES_PASSWORD=release
+          EOF
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+
       - name: Shut down previous contatiner
         run: docker compose -f docker-compose-dev.yml down
+        continue-on-error: true
       
       - name: Delete previous docker image
-        continue-on-error: true
         run: docker image rm release_backend
-
-      - name: Setup .env file for django superuser
+        continue-on-error: true
+      
+      - name: Create dockerfile
         run: |
-            echo "DJANGO_SUPERUSER_USERNAME=release" >> .env
-            echo "DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD" >> .env
-            echo "DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com" >> .env
-        env:
-          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
+          cat <<EOF > start.sh
+          python manage.py migrate --run-syncdb &> migration.log
+          python manage.py createsuperuser --no-input &> createsuperuser.log
+          python manage.py runserver 0.0.0.0:80 &> server.log
+          EOF
+          cat <<EOF > dockerfile-dev
+          FROM python:3.11.3
+          ENV PYTHONUNBUFFERED 1
+          WORKDIR /app
+          COPY requirements.txt ./
+          RUN python -m pip install --upgrade pip
+          RUN pip install -r requirements.txt
+          COPY . .
+          EXPOSE 80
+          CMD ["/bin/bash", "start.sh"]
 
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
-
+      
       - name: Start docker container using new image
         run: docker compose -f docker-compose-dev.yml up -d
-        env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
