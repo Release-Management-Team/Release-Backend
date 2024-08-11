@@ -8,7 +8,14 @@ from jwt_auth.decorators import check_access_token, use_member
 
 @check_access_token
 def notices(request: HttpRequest):
-    notices = [notice.to_dict() for notice in Notice.objects.all()]
+    notices = [
+        {
+            'title': notice.title,
+            'content': notice.content,
+            'date': str(notice.date)
+        }
+        for notice in Notice.objects.all()
+    ]
     return JsonResponse({"notices": notices})
 
 @check_access_token

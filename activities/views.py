@@ -10,11 +10,32 @@ from utils.decorators import use_body
 @require_GET
 @check_access_token
 def list_studies(request: HttpRequest):
-    data = {'studies': [study.to_dict(['name', 'description', 'tags', 'leader', 'members']) for study in Study.objects.all()] }
+    data = {
+        'studies': [
+            {
+                'name': study.name,
+                'description': study.description,
+                'tags': [t.tag for t in study.tags.all()],
+                'leader': study.leader.id,
+                'members': [m.id for m in study.members.all()],
+            }
+            for study in Study.objects.all()
+        ] 
+    }
     return JsonResponse(data)
 
 @require_GET
 @check_access_token
 def list_projects(request: HttpRequest):
-    data = {'projects': [project.to_dict(['name', 'description', 'leader', 'members']) for project in Project.objects.all()] }
+    data = {
+        'projects': [
+            {
+                'name': project.name,
+                'description' :project.description,
+                'leader': project.leader.id,
+                'members': [m.id for m in project.members.all()]
+            }
+            for project in Project.objects.all()
+        ] 
+    }
     return JsonResponse(data)

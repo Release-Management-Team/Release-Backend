@@ -13,7 +13,15 @@ from utils.decorators import use_body
 @require_http_methods(['GET'])
 @check_access_token
 def book_list(request: HttpRequest):
-    data = [book.to_dict(['id', 'name', 'available', 'image']) for book in Book.objects.all()]
+    data = [
+        {
+            'id': book.id,
+            'name': book.name,
+            'available': book.available,
+            'image': book.image
+        }
+        for book in Book.objects.all()
+    ]
     return JsonResponse({'books': data})
 
 
@@ -27,7 +35,15 @@ def book_info(request: HttpRequest):
     except:
         return HttpResponse(status=400)
     
-    return JsonResponse(book.to_dict(['id', 'name', 'available', 'tags', 'donor', 'image']))
+    data = {
+        'id': book.id,
+        'name': book.name,
+        'available': book.available,
+        'tags': [t.tag for t in book.tags.all()],
+        'donor': book.donor.id if book.donor else None,
+        'image': book.image,
+    }
+    return JsonResponse(data)
 
 
 @require_http_methods(['POST'])

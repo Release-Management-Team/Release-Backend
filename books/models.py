@@ -8,16 +8,6 @@ class Book(models.Model):
     tags        = models.ManyToManyField('BookTag', related_name='books', blank=True)
     donor       = models.ForeignKey('members.Member', models.PROTECT, blank=True, null=True)
     image       = models.CharField(max_length=10, blank=True)
-
-    def to_dict(self, fields):
-        data = {}
-        for field in fields:
-            if field == 'tags':
-                data[field] = [t.tag for t in self.tags.all()]
-            else:
-                data[field] = self._meta.get_field(field).value_from_object(self)
-        
-        return data
         
     def __str__(self):
         return f'{self.name}'
