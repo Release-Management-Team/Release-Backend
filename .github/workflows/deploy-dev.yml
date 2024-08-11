@@ -45,7 +45,9 @@ jobs:
               image: release_backend
               pull_policy: never
               depends_on: 
-                - postgres
+                postgres:
+                  condition: service_healthy
+                  restart: true
               ports:
                 - 8000:80
               environment:
@@ -65,8 +67,15 @@ jobs:
 
             postgres:
               image: postgres
+              healthcheck:
+                test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+                interval: 10s
+                retries: 5
+                start_period: 30s
+                timeout: 10s
               environment:
                 - POSTGRES_USER=release
+                - POSTGRES_DB=release
                 - POSTGRES_PASSWORD=release
           EOF
         env:
@@ -84,9 +93,9 @@ jobs:
       - name: Create dockerfile
         run: |
           cat <<EOF > start.sh
-          python manage.py migrate --run-syncdb > migration.log
-          python manage.py createsuperuser --no-input > createsuperuser.log
-          python manage.py runserver 0.0.0.0:80 > server.log
+          python manage.py migrate --run-syncdb &> migration.log
+          python manage.py createsuperuser --no-input &> createsuperuser.log
+          python manage.py runserver 0.0.0.0:80 &> server.log
           EOF
           cat <<EOF > dockerfile-dev
           FROM python:3.11.3
