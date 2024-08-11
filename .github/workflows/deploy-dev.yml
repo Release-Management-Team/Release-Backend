@@ -56,10 +56,8 @@ jobs:
           RUN python -m pip install --upgrade pip
           RUN pip install -r requirements.txt
           COPY . .
-          RUN python manage.py migrate --run-syncdb
-          RUN python manage.py createsuperuser --no-input
           EXPOSE 80
-          CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
+          CMD ["/bin/bash", "-c", "python manage.py migrate --run-syncdb;python manage.py createsuperuser --no-input;python manage.py runserver 0.0.0.0:80"]
           EOF
 
       - name: Build new docker image
