@@ -59,6 +59,9 @@ jobs:
                 - QRCODE=release
                 - ACCESS_TOKEN_EXPIRE=3
                 - REFRESH_TOKEN_EXPIRE=30
+                - DJANGO_SUPERUSER_USERNAME=release
+                - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+                - DJANGO_SUPERUSER_EMAIL=sogangrelease@gmail.com
 
             postgres:
               image: postgres
@@ -68,6 +71,7 @@ jobs:
           EOF
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
 
       - name: Shut down previous contatiner
         run: docker compose -f docker-compose-dev.yml down
@@ -76,30 +80,27 @@ jobs:
       - name: Delete previous docker image
         run: docker image rm release_backend
         continue-on-error: true
-
+      
       - name: Create dockerfile
         run: |
+          cat <<EOF > start.sh
+          python manage.py migrate --run-syncdb
+          python manage.py createsuperuser --no-input
+          python manage.py runserver 0.0.0.0:80 > server.log
+          EOF
           cat <<EOF > dockerfile-dev
           FROM python:3.11.3
           ENV PYTHONUNBUFFERED 1
-          ARG DJANGO_SUPERUSER_USERNAME
-          ARG DJANGO_SUPERUSER_PASSWORD
-          ARG DJANGO_SUPERUSER_EMAIL
           WORKDIR /app
           COPY requirements.txt ./
           RUN python -m pip install --upgrade pip
           RUN pip install -r requirements.txt
           COPY . .
           EXPOSE 80
-          CMD ["/bin/bash", "-c", "python manage.py migrate --run-syncdb;python manage.py createsuperuser --no-input;python manage.py runserver 0.0.0.0:80 > server.log"]
-          EOF
+          CMD ["/bin/bash", "start.sh"]
 
       - name: Build new docker image
         run: docker build --file dockerfile-dev --tag release_backend .
-        env:
-          DJANGO_SUPERUSER_USERNAME: release
-          DJANGO_SUPERUSER_PASSWORD: ${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-          DJANGO_SUPERUSER_EMAIL: sogangrelease@gmail.com
       
       - name: Start docker container using new image
         run: docker compose -f docker-compose-dev.yml up -d
