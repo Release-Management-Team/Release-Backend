@@ -1,0 +1,31 @@
+[
+{
+    "model": "books.book",
+    "pk": "1",
+    "fields": {
+        "name": "Abstract Algebra An Introduction",
+        "author": "Thomas W. Hungerford",
+        "available": true,
+        "donor": null,
+        "image": "",
+        "tags": [
+            "Math"
+        ]
+    }
+},
+{
+    "model": "books.booktag",
+    "pk": "Math",
+    "fields": {}
+},
+{
+    "model": "books.booktag",
+    "pk": "OS",
+    "fields": {}
+},
+{
+    "model": "books.booktag",
+    "pk": "System",
+    "fields": {}
+}
+]

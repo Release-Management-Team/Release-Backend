@@ -3,23 +3,16 @@ from django.test import TestCase, Client
 from django.conf import settings
 
 from .models import Book, BookRecord, BookTag
-from tests.data_setup import create_member_data, create_book_data
 
 class BookTestCase(TestCase):
+    fixtures = ['members', 'books']
 
     @classmethod
     def setUpTestData(cls):
-        create_member_data()
         response = Client().post('/auth/login', 
                                     data=json.dumps({'id': '20231560', 'password': 'asdf5678'}), 
                                     content_type='application/json')
         cls.headers = {'Authorization': response.json()['access_token']}
-
-    def setUp(self):
-        Book.objects.all().delete()
-        BookRecord.objects.all().delete()
-        BookTag.objects.all().delete()
-        create_book_data()
         
     def test_getting_book_list(self):
         response = self.client.get('/book/list', headers=self.headers)

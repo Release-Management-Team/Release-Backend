@@ -2,17 +2,15 @@ import json, bcrypt
 
 from django.test import TestCase
 
-from tests.data_setup import *
-
 from .models import Member
 
 from utils.encryption import checkpw
 
 # Create your tests here.
 class MemberTestCase(TestCase):
+    fixtures = ['members']
+
     def setUp(self):
-        Member.objects.all().delete()
-        create_member_data()
         data = {
             'id': '20201641',
             'password': 'asdf1234'

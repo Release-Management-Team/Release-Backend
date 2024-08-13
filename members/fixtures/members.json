@@ -1,0 +1,92 @@
+[
+{
+    "model": "members.member",
+    "pk": "20140000",
+    "fields": {
+        "name": "릴리즈",
+        "password": "JDJiJDEyJHd5WmZYcTFjd05RRnphSWlxOEdBTC5EN0kwQ2txWkdqR2EvNUhtWDVaUHN6U052WTBLall1",
+        "fcm_token": null,
+        "phone": "01000000005",
+        "email": "test5@gmail.com",
+        "state": 2,
+        "role": 0,
+        "message": "kimchi",
+        "image": "image5"
+    }
+},
+{
+    "model": "members.member",
+    "pk": "20201576",
+    "fields": {
+        "name": "김현섭",
+        "password": "JDJiJDEyJDdKS1RZbEg1NzFQbC5ubmJuUkpwQWVVWC9aTWRNUmUzTUh3djJzYXdSUlFFYzZ0Tmg4WlY2",
+        "fcm_token": null,
+        "phone": "01000000003",
+        "email": "test3@gmail.com",
+        "state": 0,
+        "role": 0,
+        "message": "egg",
+        "image": "image3"
+    }
+},
+{
+    "model": "members.member",
+    "pk": "20201641",
+    "fields": {
+        "name": "정재헌",
+        "password": "JDJiJDEyJEFmVnQ4NC9xY2NtMEE4T3cudGlWdC43NFVOTkRKaDZ2Q2k2UnZZQklmdDFhWVRWWHEyY1Nh",
+        "fcm_token": null,
+        "phone": "01000000000",
+        "email": "test0@gmail.com",
+        "state": 0,
+        "role": 1,
+        "message": "hi",
+        "image": "image0"
+    }
+},
+{
+    "model": "members.member",
+    "pk": "20211547",
+    "fields": {
+        "name": "신지원",
+        "password": "JDJiJDEyJG5iaTduNDBWQzNGY3FhdmRtQTh5dWUuNDEwMmpZVWN4RlFSZDVBVUFtY3luUkI3Mlk3ZWJt",
+        "fcm_token": null,
+        "phone": "01000000002",
+        "email": "test2@gmail.com",
+        "state": 1,
+        "role": 0,
+        "message": "spam",
+        "image": "image2"
+    }
+},
+{
+    "model": "members.member",
+    "pk": "20231560",
+    "fields": {
+        "name": "신현수",
+        "password": "JDJiJDEyJFNXNkM0eVc2TTRVdmpxdVNiRFZoNGVrVTJnRXZsa1dlOW1KRGpMcHRTNXJYTXZWdFdXMGhl",
+        "fcm_token": null,
+        "phone": "01000000001",
+        "email": "test1@gmail.com",
+        "state": 0,
+        "role": 1,
+        "message": "hello",
+        "image": "image1"
+    }
+},
+{
+    "model": "members.member",
+    "pk": "20231592",
+    "fields": {
+        "name": "이호준",
+        "password": "JDJiJDEyJDloLmNvSzNyZ3UyTE1yT3FTMmpMVHVOVnowZjhIR0RCaExMbG9mb0tmRm5jR0U2c2VxV1Jl",
+        "fcm_token": null,
+        "phone": "01000000004",
+        "email": "test4@gmail.com",
+        "state": 0,
+        "role": 0,
+        "message": "cheese",
+        "image": "image4"
+    }
+}
+]

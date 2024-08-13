@@ -1,0 +1,20 @@
+[
+{
+    "model": "notices.notice",
+    "pk": 1,
+    "fields": {
+        "title": "Notice1",
+        "content": "content of notice1",
+        "date": "2024-08-13T09:10:04.846Z"
+    }
+},
+{
+    "model": "notices.notice",
+    "pk": 2,
+    "fields": {
+        "title": "Notice2",
+        "content": "content of notice2",
+        "date": "2024-08-13T09:10:04.859Z"
+    }
+}
+]

@@ -1,0 +1,93 @@
+[
+{
+    "model": "activities.event",
+    "pk": 1,
+    "fields": {
+        "name": "개강총회",
+        "description": "2024년 가을학기 개강을 맞아 개강총회를 개최합니다.",
+        "start_date": "2024-09-02T09:00:00Z",
+        "end_date": "2024-09-02T10:00:00Z"
+    }
+},
+{
+    "model": "activities.event",
+    "pk": 2,
+    "fields": {
+        "name": "개강총회",
+        "description": "2024년 가을학기 개강을 맞아 개강총회를 개최합니다.",
+        "start_date": "2024-09-02T09:00:00Z",
+        "end_date": "2024-09-02T10:00:00Z"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 1,
+    "fields": {
+        "tag": "프로그래밍언어"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 2,
+    "fields": {
+        "tag": "웹"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 3,
+    "fields": {
+        "tag": "프론트엔드"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 4,
+    "fields": {
+        "tag": "프로그래밍언어"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 5,
+    "fields": {
+        "tag": "웹"
+    }
+},
+{
+    "model": "activities.studytag",
+    "pk": 6,
+    "fields": {
+        "tag": "프론트엔드"
+    }
+},
+{
+    "model": "activities.study",
+    "pk": 1,
+    "fields": {
+        "name": "두근두근 하스켈 클럽",
+        "description": "하스켈로 함수형 프로그래밍을 맛보아요",
+        "leader": "20231560",
+        "members": [
+            "20201641"
+        ],
+        "tags": [
+            4
+        ]
+    }
+},
+{
+    "model": "activities.study",
+    "pk": 2,
+    "fields": {
+        "name": "React로 나만의 웹페이지 만들기",
+        "description": "React와 자바스크립트를 통해 웹 프론트엔드의 기초를 공부합니다.",
+        "leader": "20201641",
+        "members": [],
+        "tags": [
+            5,
+            6
+        ]
+    }
+}
+]
