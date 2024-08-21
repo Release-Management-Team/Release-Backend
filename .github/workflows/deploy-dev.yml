@@ -95,7 +95,7 @@ jobs:
           cat <<EOF > start.sh
           python manage.py migrate --run-syncdb &> migration.log
           python manage.py createsuperuser --no-input &> createsuperuser.log
-          python manage.py testserver members books activites notices --addrport 0.0.0.0:80 &> server.log
+          python manage.py testserver members books activities notices --addrport 0.0.0.0:80 &> server.log
           EOF
           cat <<EOF > dockerfile-dev
           FROM python:3.11.3
