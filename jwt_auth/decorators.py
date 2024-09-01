@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
+from django.http import HttpResponse
 
 from members.models import Member
 
@@ -18,15 +18,15 @@ def check_access_token(func):
         token = request.headers.get('Authorization')
 
         if not token:
-            return HttpResponseForbidden()
+            return HttpResponse(status=401)
         
         try:
            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
         except:
-            return HttpResponseForbidden()
+            return HttpResponse(status=401)
         
         if payload['token_type'] == 'REFRESH' or payload['exp'] < int(datetime.datetime.now().timestamp()):
-            return HttpResponseForbidden()
+            return HttpResponse(status=401)
 
         return func(request, **kwargs)
     

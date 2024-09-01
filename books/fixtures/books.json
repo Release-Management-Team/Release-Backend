@@ -1,31 +1,76 @@
 [
+
 {
     "model": "books.book",
     "pk": "1",
     "fields": {
-        "name": "Abstract Algebra An Introduction",
-        "author": "Thomas W. Hungerford",
-        "available": true,
-        "donor": null,
-        "image": "",
+        "title": "Operating System Concept",
+        "availability": "rented",
+        "author": "Abraham Silberschatz, Peter B Galvin, Greg Gagne",
         "tags": [
-            "Math"
-        ]
+            "운영체제",
+            "시스템",
+            "전공책"
+        ],
+        "image": ""
+    }
+},
+{
+    "model": "books.book",
+    "pk": "2",
+    "fields": {
+        "title": "Do it! 깡쌤의 플러터 & 다트",
+        "availability": "available",
+        "author": "강성윤",
+        "tags": [
+            "플러터",
+            "모바일"
+        ],
+        "image": ""
+    }
+},
+{
+    "model": "books.book",
+    "pk": "3",
+    "fields": {
+        "title": "Abstract Algebra An Introduction",
+        "author": "Thomas W. Hungerford",
+        "availability": "unavailable",
+        "tags": [
+            "수학",
+            "전공책"
+        ],
+        "image": ""
     }
 },
 {
     "model": "books.booktag",
-    "pk": "Math",
+    "pk": "수학",
     "fields": {}
 },
 {
     "model": "books.booktag",
-    "pk": "OS",
+    "pk": "운영체제",
     "fields": {}
 },
 {
     "model": "books.booktag",
-    "pk": "System",
+    "pk": "시스템",
+    "fields": {}
+},
+{
+    "model":"books.booktag",
+    "pk": "전공책",
+    "fields": {}
+},
+{
+    "model":"books.booktag",
+    "pk": "플러터",
+    "fields": {}
+},
+{
+    "model":"books.booktag",
+    "pk": "모바일",
     "fields": {}
 }
 ]

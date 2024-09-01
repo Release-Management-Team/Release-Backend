@@ -1,14 +1,15 @@
-import json, datetime
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 
 from members.models import Member
-from .models import Book, BookRecord, BookTag
+from .models import Book, BookRecord, BookTag, BookState
 
 from jwt_auth.decorators import check_access_token, use_member
-from utils.decorators import use_body
+from utils.decorators import use_body, use_params
+
 
 @require_http_methods(['GET'])
 @check_access_token
@@ -16,8 +17,10 @@ def book_list(request: HttpRequest):
     data = [
         {
             'id': book.id,
-            'name': book.name,
-            'available': book.available,
+            'title': book.title,
+            'availability': book.availability,
+            'author': book.author,
+            'tags': [t.tag for t in book.tags.all()],
             'image': book.image
         }
         for book in Book.objects.all()
@@ -27,78 +30,81 @@ def book_list(request: HttpRequest):
 
 @require_http_methods(['GET'])
 @check_access_token
-def book_info(request: HttpRequest):    
-    book_id = request.GET.get('id')
+@use_params('id')
+def book_info(request: HttpRequest, params: dict):
+    book_id = params['id']
 
     try:
         book = Book.objects.get(id=book_id)
     except:
-        return HttpResponse(status=400)
+        return JsonResponse({'error': 'ERR_INVALID_BOOK_ID'}, status=400)
     
     data = {
         'id': book.id,
-        'name': book.name,
-        'available': book.available,
+        'title': book.title,
+        'availability': book.availability,
+        'available_date': '',
+        'author': book.author,
         'tags': [t.tag for t in book.tags.all()],
-        'donor': book.donor.id if book.donor else None,
         'image': book.image,
     }
     return JsonResponse(data)
 
 
-@require_http_methods(['POST'])
 @check_access_token
 @use_member
-def borrow_book(request: HttpRequest, member: Member):
-    body = json.loads(request.body)
+@use_body('id', 'qrcode')
+def borrow_book(request: HttpRequest, member: Member, body: dict):
     book_id = body['id']
     qrcode = body['qrcode']
 
     if qrcode != settings.QRCODE:
-        return JsonResponse({'status': 1}, status=400)
+        return JsonResponse({'error': 'ERR_INVALID_QR'}, status=400)
 
     try:
         book = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
-        return JsonResponse({'status': 0}, status=400)
+        return JsonResponse({'error': 'ERR_INVALID_BOOK_ID'}, status=400)
     
-    book.available=False
+    if book.availability != BookState.AVAILABLE:
+        return JsonResponse({'error': 'ERR_UNABLE_TO_BORROW'}, status=400)
+
+    book.availability = BookState.RENTED
     book.save()
-    BookRecord.objects.create(borrower_id=member.id, book_id=book.id, start_date=datetime.date.today())
+    BookRecord.objects.create(borrower_id=member.id, book_id=book.id)
 
     return HttpResponse(status=200)
 
 @require_http_methods(['POST'])
 @use_member
-@use_body
+@use_body('id', 'qrcode')
 def return_book(request: HttpRequest, member: Member, body: dict):
     book_id = body['id']
     qrcode = body['qrcode']
 
     if qrcode != settings.QRCODE:
-        return JsonResponse({'status': 1}, status=400)
+        return JsonResponse({'error': 'ERR_INVALID_QR'}, status=400)
 
     try:
         book = Book.objects.get(id=book_id)
     except ObjectDoesNotExist:
-        return JsonResponse({'status': 0}, status=400)
+        return JsonResponse({'error': 'ERR_INVALID_BOOK_ID'}, status=400)
     
-    if book.available:
-        return HttpResponseBadRequest()
+    if book.availability != BookState.RENTED:
+        return JsonResponse({'error': 'ERR_UNABLE_TO_RETURN'}, status=400)
 
-    records = BookRecord.objects.filter(borrower=member, book=book, actual_return=None)
+    try:
+        record = BookRecord.objects.get(borrower=member, book=book, actual_return=None)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'ERR_UNABLE_TO_RETURN'}, status=400)
 
-    if len(records) == 0:
-        return HttpResponseBadRequest()
-    
-    record = records[0]
-    record.actual_return = datetime.date.today()
+    record.actual_return = timezone.now()
     record.save()
 
-    book.available = True
+    book.availability = BookState.AVAILABLE
     book.save()
 
-    return HttpResponse(status=200)
+    return JsonResponse({})
 
 
 @require_http_methods(['GET'])
@@ -110,10 +116,11 @@ def borrowed_books(request: HttpRequest, member: Member):
         'books': [
             {
                 'id': record.book.id,
-                'name': record.book.name,
+                'title': record.book.title,
+                'availability': record.book.availability,
                 'author': record.book.author,
                 'tags': [t.tag for t in record.book.tags.all()],
-                'image': record.book.image,
+                'image': record.book.image
             }
             for record in records
         ]
