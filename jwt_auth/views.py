@@ -20,12 +20,12 @@ def validate_access(request):
     Return: 200 response / 403 response    
     """
 
-    return HttpResponse(200)
+    return JsonResponse({})
 
 
 
 @require_http_methods(['POST'])
-@use_body
+@use_body('id', 'password')
 def login(request, body):
     """
     Case: both access, require token are invalid or expired
@@ -39,11 +39,11 @@ def login(request, body):
     try: 
         member = Member.objects.get(id=id)
     except Member.DoesNotExist:
-        return HttpResponse('Unauthorized', status=401) 
+        return JsonResponse({'error': 'ERROR_INVALID_ID'}, status=401) 
 
     decoded = member.password
-    if not checkpw(pw, decoded):
-        return HttpResponse('Unauthorized', status=401) 
+    if not checkpw(pw, decoded): 
+        return JsonResponse({'error': 'ERROR_INVALID_PW'}, status=401) 
 
     access_token = create_access_token(member.id)
     refresh_token = create_refresh_token()
@@ -55,6 +55,7 @@ def login(request, body):
 
 
 @require_http_methods(['GET'])
+@check_refresh_token
 def refresh_token(request):
     """
     Case: Access token is invalid or expired
@@ -62,20 +63,25 @@ def refresh_token(request):
     Return: New access, refresh token / 401 response
     """
 
-
     old_access_token = request.headers.get('Authorization')
-    old_refresh_token = request.headers.get('X-Refresh_Token')
 
-    if not old_access_token or not old_refresh_token:
-        return HttpResponse('Unauthorized', status=401)
+    if not old_access_token:
+        return JsonResponse({'error': 'ACCESS_TOKEN_MISSING'}, status=401)
     
-    if not ((check_token(old_access_token) == 0) and (check_token(old_refresh_token) == 1)):
-        return HttpResponse('Unauthrized', status=401)
+    try:
+        payload = jwt.decode(old_access_token, settings.SECRET_KEY, algorithms='HS256')
+    except:
+        return JsonResponse({'error': 'INVALID_TOKEN'}, status=401)
 
-    id = get_id_from_access_token(old_access_token)
-    if id == -1:
-        print(id)
-        return HttpResponseBadRequest()
+    if payload['token_type'] != 'ACCESS':
+        return JsonResponse({'error': 'WRONG_TOKEN'}, status=401)
+
+    id = payload['id']
+    
+    try:
+        member = Member.objects.get(id=id)
+    except Member.DoesNotExist:
+        return JsonResponse({'error': 'WRONG_ID'}, status=401)
 
     access_token = create_access_token(id)
     refresh_token = create_refresh_token()

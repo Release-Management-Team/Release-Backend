@@ -27,30 +27,3 @@ def create_refresh_token():
         algorithm='HS256'
     )
     return refresh_token
-
-
-def check_token(token):
-    try:
-       payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
-    except:
-        return -1
-    
-    if payload['token_type'] == 'ACCESS':
-        return 0
-    
-    if payload['token_type'] == 'REFRESH':
-        return 1
-    
-    return -1
-
-
-def get_id_from_access_token(access_token):
-    try:
-        payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms='HS256')
-    except:
-        return -1
-    
-    if payload['token_type'] != 'ACCESS':
-        return -1
-    
-    return payload['id']
