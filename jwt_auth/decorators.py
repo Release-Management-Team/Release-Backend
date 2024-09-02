@@ -7,6 +7,7 @@ import jwt
 import datetime
 from functools import wraps
 
+
 def check_access_token(func):
     """ 
     Check access token's validity    
@@ -32,6 +33,7 @@ def check_access_token(func):
     
     return decorated
 
+
 def check_refresh_token(func):
 
     def decorated(request, *args, **kwargs):
@@ -43,7 +45,7 @@ def check_refresh_token(func):
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
         except jwt.DecodeError:
-            return JsonResponse({'error': 'ERR_INVALID_TOKEN'})
+            return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
         
         if payload['token_type'] != 'REFRESH':
             return JsonResponse({'error': 'ERR_WRONG_TOKEN'}, status=401)
@@ -62,7 +64,12 @@ def use_member(func):
     def decorated(request, *args, **kwargs):
         token = request.headers.get('Authorization')
         id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
-        member = Member.objects.get(id=id)
+        
+        try:
+            member = Member.objects.get(id=id)
+        except Member.DoesNotExist:
+            return JsonResponse({'error': 'ERR_MEMBER_DOES_NOT_EXIST'}, status=401)
+        
         return func(request, member=member, *args, **kwargs)
     
     return decorated
