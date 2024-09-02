@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'members',
     'activities',
     'notices',
+    'notification',
     'jwt_auth'
 ]
 
