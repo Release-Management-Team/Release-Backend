@@ -21,7 +21,7 @@ def validate_access(request):
     Return: 200 response / 403 response    
     """
 
-    return JsonResponse({})
+    return JsonResponse({}, status=200)
 
 
 
@@ -41,11 +41,11 @@ def login(request, body):
     try: 
         member = Member.objects.get(id=id)
     except Member.DoesNotExist:
-        return JsonResponse({'error': 'ERROR_INVALID_ID'}, status=401) 
+        return JsonResponse({'error': 'ERR_INVALID_ID'}, status=401) 
 
     decoded = member.password
     if not checkpw(pw, decoded): 
-        return JsonResponse({'error': 'ERROR_INVALID_PW'}, status=401) 
+        return JsonResponse({'error': 'ERR_INVALID_PW'}, status=401) 
 
     access_token = create_access_token(member.id)
     refresh_token = create_refresh_token()
@@ -68,22 +68,22 @@ def refresh_token(request):
     old_access_token = request.headers.get('Authorization')
 
     if not old_access_token:
-        return JsonResponse({'error': 'ACCESS_TOKEN_MISSING'}, status=401)
+        return JsonResponse({'error': 'ERR_ACCESS_TOKEN_MISSING'}, status=401)
     
     try:
         payload = jwt.decode(old_access_token, settings.SECRET_KEY, algorithms='HS256')
     except:
-        return JsonResponse({'error': 'INVALID_TOKEN'}, status=401)
+        return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
 
     if payload['token_type'] != 'ACCESS':
-        return JsonResponse({'error': 'WRONG_TOKEN'}, status=401)
+        return JsonResponse({'error': 'ERR_WRONG_TOKEN'}, status=401)
 
     id = payload['id']
     
     try:
         member = Member.objects.get(id=id)
     except Member.DoesNotExist:
-        return JsonResponse({'error': 'WRONG_ID'}, status=401)
+        return JsonResponse({'error': 'ERR_WRONG_ID'}, status=401)
 
     access_token = create_access_token(id)
     refresh_token = create_refresh_token()
