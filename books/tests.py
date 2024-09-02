@@ -15,37 +15,52 @@ class BookTestCase(TestCase):
         cls.headers = {'Authorization': response.json()['access_token']}
         
     def test_getting_book_list(self):
-        response = self.client.get('/book/list', headers=self.headers)
+        response = self.client.get('/book/', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
     def test_getting_book_info(self):
         response = self.client.get('/book/info?id=1' , headers=self.headers)
-        self.assertEqual(response.status_code, 200)
-    
-    def test_borrowing_book(self):
-        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-   
-        book = Book.objects.get(id='1')
-        self.assertFalse(book.available)
-
-    def test_returning_book(self):
-        self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
-        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
+        data = response.json()
+        self.assertEqual(data['title'], 'Operating System Concept')
         self.assertEqual(response.status_code, 200)
 
-        book = Book.objects.get(id='1')
-        self.assertTrue(book.available)
-        
-    def test_returning_invalid_book(self):
-        response = self.client.post('/book/return', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
+    def test_borrow_return(self):
+        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '2', 'qrcode': settings.QRCODE}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Book.objects.get(id='2').availability, 'rented')
+
+        response = self.client.post('/book/return', headers=self.headers, data={'id': '2', 'qrcode': settings.QRCODE}, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Book.objects.get(id='2').availability, 'available')
+
+    def test_borrowing_book_with_invalid_qr(self):
+        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '2', 'qrcode': settings.QRCODE + 'a'}, content_type='application/json')
         self.assertEqual(response.status_code, 400)
+        body = response.json()
+        self.assertEqual(body['error'], 'ERR_INVALID_QR')
 
-    def test_getting_borrowing_books(self):
+    def test_borrowing_unavailble_book(self):
         response = self.client.post('/book/borrow', headers=self.headers, data={'id': '1', 'qrcode': settings.QRCODE}, content_type='application/json')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['error'], 'ERR_UNABLE_TO_BORROW')
+
+    def test_borrowing_invalid_book(self):
+        response = self.client.post('/book/borrow', headers=self.headers, data={'id': '10', 'qrcode': settings.QRCODE}, content_type='application/json')
+        self.assertEqual(response.json()['error'], 'ERR_INVALID_BOOK_ID')
+
+    def test_getting_borrowed_books1(self):
         response = self.client.get('/book/borrowing', headers=self.headers)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['books'], [])
 
+    def test_getting_borrowed_books1(self):
+        self.client.post('/book/borrow', headers=self.headers, data={'id': '2', 'qrcode': settings.QRCODE}, content_type='application/json')
+
+        response = self.client.get('/book/borrowing', headers=self.headers)
+        self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(len(data['books']), 1)
+        self.assertEqual(data['books'][0]['id'], '2')
+
+        self.client.post('/book/return', headers=self.headers, data={'id': '2', 'qrcode': settings.QRCODE}, content_type='application/json')
+
+        

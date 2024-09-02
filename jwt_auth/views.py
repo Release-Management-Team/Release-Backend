@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
@@ -25,6 +26,7 @@ def validate_access(request):
 
 
 @require_http_methods(['POST'])
+@csrf_exempt
 @use_body('id', 'password')
 def login(request, body):
     """

@@ -11,7 +11,9 @@
         "state": 2,
         "role": 0,
         "message": "kimchi",
-        "image": "image5"
+        "image": "image5",
+        "joined_semester": "2014.03",
+        "new": true
     }
 },
 {
@@ -26,7 +28,9 @@
         "state": 0,
         "role": 0,
         "message": "egg",
-        "image": "image3"
+        "image": "image3",
+        "joined_semester": "2023.09",
+        "new": false
     }
 },
 {
@@ -41,7 +45,9 @@
         "state": 0,
         "role": 1,
         "message": "hi",
-        "image": "image0"
+        "image": "image0",
+        "joined_semester": "2020.03",
+        "new": false
     }
 },
 {
@@ -56,7 +62,9 @@
         "state": 1,
         "role": 0,
         "message": "spam",
-        "image": "image2"
+        "image": "image2",
+        "joined_semester": "2021.03",
+        "new": false
     }
 },
 {
@@ -71,7 +79,9 @@
         "state": 0,
         "role": 1,
         "message": "hello",
-        "image": "image1"
+        "image": "image1",
+        "joined_semester": "2023.03",
+        "new": false
     }
 },
 {
@@ -86,7 +96,9 @@
         "state": 0,
         "role": 0,
         "message": "cheese",
-        "image": "image4"
+        "image": "image4",
+        "joined_semester": "2023.03",
+        "new": false
     }
 }
 ]
