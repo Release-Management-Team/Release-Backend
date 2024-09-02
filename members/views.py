@@ -1,10 +1,11 @@
+import re
 
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
 from jwt_auth.decorators import *
 from utils.decorators import *
-from utils.encryption import hashpw
+from utils.encryption import hashpw, checkpw
 
 
 @require_http_methods(['GET'])
@@ -12,57 +13,63 @@ from utils.encryption import hashpw
 @use_member
 def get_my_profile(request, member):
     return JsonResponse({
-        'id': member.id,
+        'image': member.image,
         'name': member.name,
+        'role': member.role,
+        'message': member.message,
+        'id': member.id,
+        'department': member.department,
         'phone': member.phone,
         'email': member.email,
         'state': member.state,
-        'role': member.role,
-        'message': member.message,
-        'image': member.image
-    })
-
+        'joined_semester': member.joined_semester,
+        'new': member.new,
+    }, status=200)
 
 @require_http_methods(['POST'])
 @check_access_token
-@use_body
+@use_body('phone', 'email', 'message', 'image')
 @use_member
 def update_my_profile(request, body, member):
-    try:
-        if 'phone' in body:
-            member.phone = body.get('phone')
-        
-        if 'email' in body:
-            member.email = body.get('email')
-        
-        if 'message' in body:
-            member.message = body.get('message')
-
-        if 'image' in body:
-            member.image = body.get('image')
+    if body['phone'] != '':
+        member.phone = body['phone']
     
-        member.save()
-    except KeyError:
-        return HttpResponseBadRequest()
-    finally:
-        return HttpResponse(200)
+    if body['email'] != '':
+        member.email = body['email']
+    
+    if body['message'] != '':
+        member.message = body['message']
+    
+    if body['image'] != '':
+        member.image = body['image']
+    
+    member.save()
+
+    return JsonResponse({}, status=200)
 
 
 @require_http_methods(['POST'])
 @check_access_token
-@use_body
+@use_body('old_password', 'new_password')
 @use_member
 def change_password(request, body, member):
-    try:
-        pw = body.get('password')
-        encoded = hashpw(pw)
-        member.password = encoded
+    password = member.password
+    old_password = body['old_password']
+    
+    if not checkpw(old_password, password):
+        return JsonResponse({'error': 'ERR_INVALID_OLD_PW'}, status=400)
+    
+    new_password = body['new_password']
 
-        member.save()
-    except:
-        return HttpResponseBadRequest()
-    finally:
-        return HttpResponse(200)
+    if not (re.search('[a-zA-z]', new_password) and re.search('[0-9]', new_password) and 8 <= len(new_password) <= 20):
+        return JsonResponse({'error': 'ERR_INVALID_PW_FORMAT'}, status=401)
+
+    encoded = hashpw(new_password)
+    member.password = encoded
+    
+    member.save()
+
+    return JsonResponse({}, status=200)
 
 
 @require_http_methods(['GET'])
