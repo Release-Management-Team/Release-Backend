@@ -23,7 +23,7 @@ class Member(models.Model):
     id          = models.CharField(primary_key=True, max_length=12)
     name        = models.CharField(max_length=10)
     password    = models.BinaryField(max_length=100) # byte array encrypted by bcrpyt
-    fcm_token   = models.CharField(max_length=200, null=True)
+    fcm_token   = models.CharField(max_length=200, blank=True)
     department  = models.CharField(max_length=100)
     phone       = models.CharField(max_length=20)
     email       = models.EmailField()
