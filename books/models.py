@@ -17,7 +17,7 @@ class Book(models.Model):
     author       = models.CharField(max_length=100)
     availability = models.CharField(max_length=11, choices=BookState.choices)
     tags         = models.ManyToManyField('BookTag', related_name='books', blank=True)
-    image        = models.CharField(max_length=10, blank=True)
+    image        = models.BooleanField()
         
     def __str__(self):
         return f'{self.title}'

@@ -2,18 +2,19 @@ import re
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.conf import settings
 
 from jwt_auth.decorators import *
 from utils.decorators import *
 from utils.encryption import hashpw, checkpw
-
+from utils.storage import put_base64_image
 
 @require_http_methods(['GET'])
 @check_access_token
 @use_member
 def get_my_profile(request, member):
     return JsonResponse({
-        'image': member.image,
+        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else '',
         'name': member.name,
         'role': member.role,
         'message': member.message,
@@ -41,7 +42,8 @@ def update_my_profile(request, body, member):
         member.message = body['message']
     
     if body['image'] != '':
-        member.image = body['image']
+        put_base64_image('member-image', body['image'], str(member.id))
+        member.image = True
     
     member.save()
 
@@ -91,7 +93,7 @@ def get_member_profile(request):
     try:
         member = Member.objects.get(id=id)
     except Member.DoesNotExist:
-        return HttpResponseBadRequest()
+        return JsonResponse({'error': 'ERR_INVALID_MEMBER_ID'}, status=400)
     
     return JsonResponse({
         'id': member.id,

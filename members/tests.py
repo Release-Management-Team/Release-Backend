@@ -1,6 +1,7 @@
-import json, bcrypt
+import json, bcrypt, requests
 
 from django.test import TestCase
+from django.conf import settings
 
 from .models import Member
 
@@ -43,17 +44,22 @@ class MemberTestCase(TestCase):
             'phone': '01012345678',
             'email': 'deadbeaf@gmail.com',
             'message': 'you cracked',
-            'image': 'imagine'
+            'image': 'dGVzdCBpbWFnZQ=='
         }
         response = self.client.post('/member/profile/update', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-        member = Member.objects.get(id='20201641')
-        self.assertEqual(member.phone, '01012345678')
-        self.assertEqual(member.email, 'deadbeaf@gmail.com')
-        self.assertEqual(member.message, 'you cracked')
-        self.assertEqual(member.image, 'imagine')
+        response = self.client.get('/member/profile', headers=self.headers, content_type='application/json')
 
+        member = response.json()
+        self.assertEqual(member['phone'], '01012345678')
+        self.assertEqual(member['email'], 'deadbeaf@gmail.com')
+        self.assertEqual(member['message'], 'you cracked')
+
+        image_url = member['image']
+        image = requests.get(image_url)
+        self.assertEqual(image.content, b'test image')
+        
 
     def test_change_password(self):
         # print('\nTesting change_password...')

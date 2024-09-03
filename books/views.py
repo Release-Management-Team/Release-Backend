@@ -21,7 +21,7 @@ def book_list(request: HttpRequest):
             'availability': book.availability,
             'author': book.author,
             'tags': [t.tag for t in book.tags.all()],
-            'image': book.image
+            'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
         }
         for book in Book.objects.all()
     ]
@@ -46,7 +46,7 @@ def book_info(request: HttpRequest, params: dict):
         'available_date': '',
         'author': book.author,
         'tags': [t.tag for t in book.tags.all()],
-        'image': book.image,
+        'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
     }
     return JsonResponse(data)
 

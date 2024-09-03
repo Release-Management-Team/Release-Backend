@@ -1,10 +1,10 @@
-import minio, base64, hashlib
+from io import BytesIO
+import minio, base64
 from django.conf import settings
 
-MINIO_HOST = settings.MINIO_HOST
-MINIO_PORT = settings.MINIO_PORT
-MINIO_ACCESS_KEY = settings.MINIO_ACCESS_KEY
-MINIO_SECRET_KEY = settings.MINIO_SECRET_KEY
+STORAGE_HOST = settings.STORAGE_HOST
+STORAGE_ACCESS_KEY = settings.STORAGE_ACCESS_KEY
+STORAGE_SECRET_KEY = settings.STORAGE_SECRET_KEY
 
 BUCKET_POLICY = """
 {
@@ -30,20 +30,17 @@ BUCKET_POLICY = """
 
 def _get_client() -> minio.Minio:
     return minio.Minio(
-                endpoint=f'{MINIO_HOST}:{MINIO_PORT}', 
-                access_key=MINIO_ACCESS_KEY, 
-                secret_key=MINIO_SECRET_KEY, 
+                endpoint=f'{STORAGE_HOST}', 
+                access_key=STORAGE_ACCESS_KEY, 
+                secret_key=STORAGE_SECRET_KEY, 
                 secure=False
             )
 
-def put_base64_image(bucket: str, data: str) -> str:
+def put_base64_image(bucket: str, data: str, name: str):
     client = _get_client()
     data = base64.b64decode(data)
-    name = hashlib.md5(data).hexdigest()
 
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
         client.set_bucket_policy(bucket, BUCKET_POLICY)
-    client.put_object(bucket_name=bucket, object_name=name, data=data, content_type='image/jpeg')
-
-    return name
+    client.put_object(bucket_name=bucket, object_name=name, data=BytesIO(data), length=len(data), content_type='image/jpeg')

@@ -30,6 +30,6 @@ class Member(models.Model):
     state       = models.IntegerField(choices=State.choices)
     role        = models.IntegerField(choices=Role.choices)
     message     = models.CharField(max_length=300, blank=True)
-    image       = models.CharField(max_length=32, blank=True)
+    image       = models.BooleanField()
     joined_semester = models.CharField(max_length=10)
     new         = models.BooleanField()
