@@ -80,18 +80,19 @@ def get_members_list(request):
 
     return JsonResponse({
         'profiles': profiles_list,
-    }, safe=False)
+    }, safe=False, status=200)
 
 
 @require_http_methods(['GET'])
+@use_params('id')
 @check_access_token
-def get_member_profile(request):
-    id = request.GET.get('id')
+def get_member_profile(request, params):
+    id = params['id']
 
     try:
         member = Member.objects.get(id=id)
     except Member.DoesNotExist:
-        return HttpResponseBadRequest()
+        return JsonResponse({'error': 'ERR_MEMBER_DOES_NOT_EXIST'}, status=400)
     
     return JsonResponse({
         'id': member.id,
@@ -100,4 +101,4 @@ def get_member_profile(request):
         'role': member.role,
         'message': member.message,
         'image': member.image
-    })
+    }, status=200)
