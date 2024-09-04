@@ -5,7 +5,8 @@
     "fields": {
         "title": "Notice1",
         "content": "content of notice1",
-        "date": "2024-08-13T09:10:04.846Z"
+        "date": "2024-08-13T09:10:04.846Z",
+        "important": true
     }
 },
 {
@@ -14,7 +15,8 @@
     "fields": {
         "title": "Notice2",
         "content": "content of notice2",
-        "date": "2024-08-13T09:10:04.859Z"
+        "date": "2024-08-13T09:10:04.859Z",
+        "important": false
     }
 }
 ]

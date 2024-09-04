@@ -12,7 +12,8 @@ def notices(request: HttpRequest):
         {
             'title': notice.title,
             'content': notice.content,
-            'date': str(notice.date)
+            'date': str(notice.date),
+            'important': notice.important
         }
         for notice in Notice.objects.all()
     ]
