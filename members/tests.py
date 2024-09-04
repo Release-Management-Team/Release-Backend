@@ -9,7 +9,7 @@ from utils.encryption import checkpw
 
 # Create your tests here.
 class MemberTestCase(TestCase):
-    fixtures = ['members']
+    fixtures = ['members', 'notices', 'activities']
 
     def setUp(self):
         data = {
@@ -23,6 +23,16 @@ class MemberTestCase(TestCase):
         self.headers = {
             'Authorization': token
         }
+
+    def test_home(self):
+        response = self.client.get('/member/home', headers=self.headers)
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+        self.assertEqual(data['name'], '정재헌')
+        self.assertEqual(data['image'], '')
+        self.assertEqual(len(data['notices']), 1)
+        self.assertEqual(len(data['schedules'][4]), 1)
 
 
     def test_get_my_profile(self):
@@ -44,7 +54,7 @@ class MemberTestCase(TestCase):
             'phone': '01012345678',
             'email': 'deadbeaf@gmail.com',
             'message': 'you cracked',
-            'image': 'dGVzdCBpbWFnZQ=='
+            'image': 'dGVzdCBpbWFnZQ==' if settings.TEST_STORAGE else ''
         }
         response = self.client.post('/member/profile/update', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -56,9 +66,10 @@ class MemberTestCase(TestCase):
         self.assertEqual(member['email'], 'deadbeaf@gmail.com')
         self.assertEqual(member['message'], 'you cracked')
 
-        image_url = member['image']
-        image = requests.get(image_url)
-        self.assertEqual(image.content, b'test image')
+        if settings.TEST_STORAGE:
+            image_url = member['image']
+            image = requests.get(image_url)
+            self.assertEqual(image.content, b'test image')
         
 
     def test_change_password(self):

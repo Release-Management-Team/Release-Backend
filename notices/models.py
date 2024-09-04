@@ -5,4 +5,4 @@ class Notice(models.Model):
     content   = models.CharField(max_length=1000)
     date      = models.DateTimeField()
     important = models.BooleanField()
-    
+    expired   = models.BooleanField()

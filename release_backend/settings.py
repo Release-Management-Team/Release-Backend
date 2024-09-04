@@ -36,6 +36,7 @@ STORAGE_HOST = os.environ.get('STORAGE_HOST')
 STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY')
 STORAGE_SECRET_KEY = os.environ.get('STORAGE_SECRET_KEY')
 STORAGE_URL = os.environ.get('STORAGE_URL')
+TEST_STORAGE = os.environ.get('TEST_STORAGE').lower() == 'true'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

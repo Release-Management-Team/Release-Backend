@@ -44,7 +44,7 @@ def list_event(request: HttpRequest):
         {
             'name': event.name,
             'start_time': event.start_time.isoformat(),
-            'end_time': event.end_time.isoformat(),
+            'end_time': event.end_time.isoformat() if event.end_time else '',
             'place': event.place
         }
         for event in Event.objects.all()

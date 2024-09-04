@@ -15,7 +15,7 @@ class Event(models.Model):
     name         = models.CharField(max_length=100)
     description  = models.CharField(max_length=1000)
     start_time   = models.DateTimeField()
-    end_time     = models.DateTimeField()
+    end_time     = models.DateTimeField(blank=True, null=True)
     place        = models.CharField(max_length=100) 
     this_week    = models.BooleanField()
     

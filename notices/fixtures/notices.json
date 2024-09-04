@@ -6,7 +6,8 @@
         "title": "Notice1",
         "content": "content of notice1",
         "date": "2024-08-13T09:10:04.846Z",
-        "important": true
+        "important": true,
+        "expired": false
     }
 },
 {
@@ -16,7 +17,8 @@
         "title": "Notice2",
         "content": "content of notice2",
         "date": "2024-08-13T09:10:04.859Z",
-        "important": false
+        "important": false,
+        "expired": false
     }
 }
 ]
