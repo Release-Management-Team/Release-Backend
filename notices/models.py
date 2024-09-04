@@ -6,3 +6,6 @@ class Notice(models.Model):
     date      = models.DateTimeField()
     important = models.BooleanField()
     expired   = models.BooleanField()
+
+    def __str__(self):
+        return self.title

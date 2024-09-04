@@ -18,6 +18,9 @@ class Event(models.Model):
     end_time     = models.DateTimeField(blank=True, null=True)
     place        = models.CharField(max_length=100) 
     this_week    = models.BooleanField()
+
+    def __str__(self):
+        return self.name
     
 class ActivityTag(models.Model):
     tag = models.CharField(max_length=100, primary_key=True)
@@ -32,6 +35,9 @@ class Study(models.Model):
     image       = models.BooleanField()
     link        = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.name
+
 class Project(models.Model):
     name        = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
@@ -41,3 +47,6 @@ class Project(models.Model):
     state       = models.CharField(choices=ActivityState.choices, max_length=14)
     image       = models.BooleanField()
     link        = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name

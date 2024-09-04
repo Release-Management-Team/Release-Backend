@@ -33,3 +33,6 @@ class Member(models.Model):
     image       = models.BooleanField()
     joined_semester = models.CharField(max_length=10)
     new         = models.BooleanField()
+
+    def __str__(self):
+        return f'{self.id} {self.name}'
