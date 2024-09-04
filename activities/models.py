@@ -38,5 +38,6 @@ class Project(models.Model):
     leader      = models.ForeignKey('members.Member', models.PROTECT, related_name='running_projects')
     members     = models.ManyToManyField('members.Member', related_name='projects')
     tags        = models.ManyToManyField('ActivityTag', related_name='projects', blank=True)
-    state       = models.IntegerField(choices=ActivityState.choices)
+    state       = models.CharField(choices=ActivityState.choices, max_length=14)
+    image       = models.BooleanField()
     link        = models.CharField(max_length=200)

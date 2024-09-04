@@ -5,8 +5,9 @@
     "fields": {
         "name": "개강총회",
         "description": "2024년 가을학기 개강을 맞아 개강총회를 개최합니다.",
-        "start_date": "2024-09-06T18:00:00+09:00",
-        "end_date": "2024-09-06T18:00:00+09:00"
+        "start_time": "2024-09-06T18:00:00+09:00",
+        "end_time": "2024-09-06T18:00:00+09:00",
+        "this_week": true
     }
 },
 {
@@ -15,8 +16,9 @@
     "fields": {
         "name": "MT",
         "description": "2024년 가을학기 MT",
-        "start_date": "2024-11-01T19:00+09:00",
-        "end_date": "2024-11-02T08:00+09:00"
+        "start_time": "2024-11-01T19:00+09:00",
+        "end_time": "2024-11-02T08:00+09:00",
+        "this_week": false
     }
 },
 {
@@ -33,7 +35,7 @@
             "프로그래밍언어"
         ],
         "state": "recruiting",
-        "image": "",
+        "image": false,
         "link": ""
     }
 },
@@ -52,7 +54,7 @@
             "프론트엔드"
         ],
         "state": "before_recruit",
-        "image": "",
+        "image": false,
         "link": ""
     }
 },
@@ -71,24 +73,28 @@
             "알고리즘"
         ],
         "state": "running",
-        "image": "",
+        "image": false,
         "link": "https://github.com/catenary91/dailyps"
     }
 },
 {
     "model": "activities.activitytag",
-    "pk": "프로그래밍언어"
+    "pk": "프로그래밍언어",
+    "fields": {}
 },
 {
     "model": "activities.activitytag",
-    "pk": "웹"
+    "pk": "웹",
+    "fields": {}
 },
 {
     "model": "activities.activitytag",
-    "pk": "프론트엔드"
+    "pk": "프론트엔드",
+    "fields": {}
 },
 {
-    "models": "activities.activitytag",
-    "pk": "알고리즘"
+    "model": "activities.activitytag",
+    "pk": "알고리즘",
+    "fields": {}
 }
 ]

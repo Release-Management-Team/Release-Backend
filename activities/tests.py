@@ -13,17 +13,16 @@ class ActivityTestCase(TestCase):
                                     content_type='application/json')
         cls.headers = {'Authorization': response.json()['access_token']}
     
-    def test_getting_studies(self):
-        response = self.client.get('/activity/studies', headers=self.headers)
+    def test_getting_studies_prjects(self):
+        response = self.client.get('/activity/', headers=self.headers, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
-        # print(data)
-        self.assertEqual(len(data['studies']), 2)
+        self.assertEqual(len(data['activities']), 3)
 
-    def test_getting_projects(self):
-        response = self.client.get('/activity/projects', headers=self.headers)
+    def test_getting_events(self):
+        response = self.client.get('/activity/event', headers=self.headers, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
-        self.assertEqual(len(data['projects']), 0)
+        self.assertEqual(len(data['events']), 2)
