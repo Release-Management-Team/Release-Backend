@@ -14,7 +14,7 @@ class BookTestCase(TestCase):
                                     content_type='application/json')
         
         token = response.json()['access_token']
-        cls.headers = {'Authorization': f'bearer {token}'}
+        cls.headers = {'Authorization': f'Bearer {token}'}
         
     def test_getting_book_list(self):
         response = self.client.get('/book/', headers=self.headers)

@@ -21,7 +21,7 @@ class MemberTestCase(TestCase):
         json_response = response.json()
         token = json_response.get('access_token')        
         self.headers = {
-            'Authorization': f'bearer {token}'
+            'Authorization': f'Bearer {token}'
         }
 
     def test_home(self):

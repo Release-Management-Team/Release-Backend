@@ -13,7 +13,7 @@ class AccountTestCase(TestCase):
     def test_validate_access(self):
         access_token = create_access_token('20201641')
         headers = {
-            'Authorization': f'bearer {access_token}'
+            'Authorization': f'Bearer {access_token}'
         }
         response = self.client.get('/auth/validate-access', headers=headers)
         self.assertEqual(response.status_code, 200)
@@ -23,7 +23,7 @@ class AccountTestCase(TestCase):
         access_token = create_access_token('20201641')
         refresh_token = create_refresh_token()
         headers = {
-            'Authorization': f'bearer {access_token}',
+            'Authorization': f'Bearer {access_token}',
             'X-Refresh_Token': refresh_token
         }
         response = self.client.get('/auth/refresh-token', headers=headers)

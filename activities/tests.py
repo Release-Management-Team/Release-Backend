@@ -13,7 +13,7 @@ class ActivityTestCase(TestCase):
                                     content_type='application/json')
         
         token = response.json()['access_token']
-        cls.headers = {'Authorization': f'bearer {token}'}
+        cls.headers = {'Authorization': f'Bearer {token}'}
     
     def test_getting_studies_prjects(self):
         response = self.client.get('/activity/', headers=self.headers, content_type='application/json')

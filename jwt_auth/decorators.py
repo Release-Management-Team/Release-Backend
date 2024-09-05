@@ -16,6 +16,9 @@ def check_access_token(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
+        if not 'Authorization' in request.headers:
+            return JsonResponse({'error': 'ERR_MISSING_TOKEN'}, status=401)
+
         token = request.headers.get('Authorization')[7:]
 
         if not token:

@@ -13,7 +13,7 @@ class NotificationTestCase(TestCase):
                                     content_type='application/json')
         
         token = response.json()['access_token']
-        cls.headers = {'Authorization': f'bearer {token}'}
+        cls.headers = {'Authorization': f'Bearer {token}'}
     
 
     def test_uploading_fcm_token(self):
