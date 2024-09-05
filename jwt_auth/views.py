@@ -65,7 +65,7 @@ def refresh_token(request):
     Return: New access, refresh token / 401 response
     """
 
-    old_access_token = request.headers.get('Authorization')
+    old_access_token = request.headers.get('Authorization')[7:]
 
     if not old_access_token:
         return JsonResponse({'error': 'ERR_ACCESS_TOKEN_MISSING'}, status=401)

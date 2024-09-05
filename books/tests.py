@@ -12,7 +12,9 @@ class BookTestCase(TestCase):
         response = Client().post('/auth/login', 
                                     data=json.dumps({'id': '20231560', 'password': 'asdf5678'}), 
                                     content_type='application/json')
-        cls.headers = {'Authorization': response.json()['access_token']}
+        
+        token = response.json()['access_token']
+        cls.headers = {'Authorization': f'bearer {token}'}
         
     def test_getting_book_list(self):
         response = self.client.get('/book/', headers=self.headers)

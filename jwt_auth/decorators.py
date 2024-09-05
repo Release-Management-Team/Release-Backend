@@ -16,7 +16,7 @@ def check_access_token(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
-        token = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')[7:]
 
         if not token:
             return JsonResponse({'error': 'ERR_ACCESS_TOKEN_MISSING'}, status=401)
@@ -62,7 +62,7 @@ def use_member(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
-        token = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')[7:]
         id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
         
         try:

@@ -14,7 +14,8 @@ class NoticeTestCase(TestCase):
                                     data=json.dumps({'id': '20231560', 'password': 'asdf5678'}), 
                                     content_type='application/json')
         
-        cls.headers = {'Authorization': response.json()['access_token']}
+        token = response.json()['access_token']
+        cls.headers = {'Authorization': f'bearer {token}'}
     
     def test_getting_notices(self):
         response = self.client.get('/notice/list', headers=self.headers)

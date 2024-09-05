@@ -11,7 +11,9 @@ class ActivityTestCase(TestCase):
         response = Client().post('/auth/login', 
                                     data=json.dumps({'id': '20231560', 'password': 'asdf5678'}), 
                                     content_type='application/json')
-        cls.headers = {'Authorization': response.json()['access_token']}
+        
+        token = response.json()['access_token']
+        cls.headers = {'Authorization': f'bearer {token}'}
     
     def test_getting_studies_prjects(self):
         response = self.client.get('/activity/', headers=self.headers, content_type='application/json')
