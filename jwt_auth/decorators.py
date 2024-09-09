@@ -16,14 +16,11 @@ def check_access_token(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
-        if not 'Authorization' in request.headers:
+        if not 'Access' in request.headers:
             return JsonResponse({'error': 'ERR_MISSING_TOKEN'}, status=401)
 
-        token = request.headers.get('Authorization')[7:]
+        token = request.headers.get('Access')[7:]
 
-        if not token:
-            return JsonResponse({'error': 'ERR_ACCESS_TOKEN_MISSING'}, status=401)
-        
         try:
            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
         except:
@@ -65,7 +62,7 @@ def use_member(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
-        token = request.headers.get('Authorization')[7:]
+        token = request.headers.get('Access')[7:]
         id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
         
         try:

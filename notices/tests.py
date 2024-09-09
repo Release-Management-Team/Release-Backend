@@ -15,7 +15,7 @@ class NoticeTestCase(TestCase):
                                     content_type='application/json')
         
         token = response.json()['access_token']
-        cls.headers = {'Authorization': f'Bearer {token}'}
+        cls.headers = {'Access': f'Bearer {token}'}
     
     def test_getting_notices(self):
         response = self.client.get('/notice/list', headers=self.headers)
