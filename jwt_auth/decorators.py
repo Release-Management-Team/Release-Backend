@@ -16,6 +16,9 @@ def check_access_token(func):
 
     @wraps(func)
     def decorated(request, *args, **kwargs):
+        if settings.TEST_WITHOUT_JWT == True:
+            return func(request, **kwargs)
+            
         if not 'Access' in request.headers:
             return JsonResponse({'error': 'ERR_MISSING_TOKEN'}, status=401)
 
@@ -35,8 +38,10 @@ def check_access_token(func):
 
 
 def check_refresh_token(func):
-
     def decorated(request, *args, **kwargs):
+        if settings.TEST_WITHOUT_JWT == True:
+            return func(request, **kwargs)
+        
         token = request.headers.get('X-Refresh_Token')
 
         if not token:
@@ -59,7 +64,6 @@ def check_refresh_token(func):
 
 
 def use_member(func):
-
     @wraps(func)
     def decorated(request, *args, **kwargs):
         token = request.headers.get('Access')[7:]
