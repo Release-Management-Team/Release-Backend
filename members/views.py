@@ -15,7 +15,7 @@ from activities.models import Event
 
 @require_http_methods(['GET'])
 @check_access_token
-def members_list(request, id):
+def members_list(request, **kwargs):
     profiles = Member.objects.values('id', 'name', 'state', 'role', 'message', 'image')    
     profiles_list = list(profiles)
 
@@ -26,7 +26,7 @@ def members_list(request, id):
 
 @require_http_methods(['GET'])
 @check_access_token
-def member_profile(request, id, student_id: int):
+def member_profile(request, student_id: int, **kwargs):
     try:
         member = Member.objects.get(id=student_id)
     except Member.DoesNotExist:
@@ -45,7 +45,7 @@ def member_profile(request, id, student_id: int):
 @require_http_methods(['GET', 'POST'])
 @check_access_token
 @use_member
-def my_profile(request, member: Member):
+def my_profile(request, member: Member, **kwargs):
     return JsonResponse({
         'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else '',
         'name': member.name,
@@ -65,7 +65,7 @@ def my_profile(request, member: Member):
 @check_access_token
 @use_member
 @use_body('phone', 'email', 'message', 'image')
-def update_my_profile(request, member, body):
+def update_my_profile(request, member, body, **kwargs):
     if body['phone'] != '':
         member.phone = body['phone']
     
@@ -88,7 +88,7 @@ def update_my_profile(request, member, body):
 @check_access_token
 @use_member
 @use_body('old_password', 'new_password')
-def change_password(request, body, member):
+def change_password(request, body, member, **kwargs):
     password = member.password
     old_password = body['old_password']
     
@@ -111,7 +111,7 @@ def change_password(request, body, member):
 @require_http_methods(['GET'])
 @check_access_token
 @use_member
-def home(request, member: Member):
+def home(request, member: Member, **kwargs):
     notices = Notice.objects.filter(important=True, expired=False).order_by('date')
     notices_data = [
         {
