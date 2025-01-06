@@ -38,7 +38,7 @@ class MemberTestCase(TestCase):
     def test_get_my_profile(self):
         # print('\nTesting get_my_profile...')
 
-        response = self.client.get('/member/profile', headers=self.headers)
+        response = self.client.get('/member/my-profile', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
         json_response = response.json()
@@ -49,18 +49,16 @@ class MemberTestCase(TestCase):
         
 
     def test_update_my_profile(self):
-        # print('\nTesting update_my_profile...')
         data = {
             'phone': '01012345678',
             'email': 'deadbeaf@gmail.com',
             'message': 'you cracked',
             'image': 'dGVzdCBpbWFnZQ==' if settings.TEST_STORAGE else ''
         }
-        response = self.client.post('/member/profile/update', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.post('/member/my-profile/update', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get('/member/profile', headers=self.headers, content_type='application/json')
-
+        response = self.client.get('/member/my-profile', headers=self.headers, content_type='application/json')
         member = response.json()
         self.assertEqual(member['phone'], '01012345678')
         self.assertEqual(member['email'], 'deadbeaf@gmail.com')
@@ -73,15 +71,13 @@ class MemberTestCase(TestCase):
         
 
     def test_change_password(self):
-        # print('\nTesting change_password...')
-
         old_password = 'asdf1234'
         new_password = 'new_password1'
         data = {
             'old_password': old_password,
             'new_password': new_password
         }
-        response = self.client.post('/member/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.post('/member/my-profile/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         member = Member.objects.get(id='20201641')
@@ -89,33 +85,27 @@ class MemberTestCase(TestCase):
 
 
     def test_change_password_wrong_pw(self):
-        # print('\nTesting change_password wit...')
-
         old_password = 'qwer1234'
         new_password = 'new_password'
         data = {
             'old_password': old_password,
             'new_password': new_password
         }
-        response = self.client.post('/member/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.post('/member/my-profile/change-password', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
 
 
     def test_get_members_list(self):
-        # print('\nTesting get_members_list...')
-
-        response = self.client.get('/member/member-list', headers=self.headers)
+        response = self.client.get('/member/', headers=self.headers)
         json_response = response.json()
         profiles = json_response.get('profiles')
         
 
 
     def test_get_member_profile(self):
-        # print('\nTesting get_member_profile...')
-
         id = '20231560'
-        response = self.client.get('/member/member-profile?id=20231560', headers=self.headers)
+        response = self.client.get('/member/20231560', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
         json_response = response.json()
