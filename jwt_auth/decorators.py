@@ -32,7 +32,8 @@ def check_access_token(func):
         if payload['token_type'] != 'ACCESS' or payload['exp'] < int(datetime.datetime.now().timestamp()):
             return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
 
-        return func(request, **kwargs)
+        student_id = payload['id']    
+        return func(request, id=student_id, **kwargs)
     
     return decorated
 
@@ -65,15 +66,12 @@ def check_refresh_token(func):
 
 def use_member(func):
     @wraps(func)
-    def decorated(request, *args, **kwargs):
-        token = request.headers.get('Access')[7:]
-        id = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')['id']
-        
+    def decorated(request, id):
         try:
             member = Member.objects.get(id=id)
         except Member.DoesNotExist:
             return JsonResponse({'error': 'ERR_MEMBER_DOES_NOT_EXIST'}, status=401)
         
-        return func(request, member=member, *args, **kwargs)
+        return func(request, member=member)
     
     return decorated
