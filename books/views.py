@@ -13,7 +13,7 @@ from utils.decorators import use_body, use_params
 
 @require_http_methods(['GET'])
 @check_access_token
-def book_list(request: HttpRequest):
+def book_list(request: HttpRequest, id):
     data = [
         {
             'id': book.id,
@@ -30,10 +30,7 @@ def book_list(request: HttpRequest):
 
 @require_http_methods(['GET'])
 @check_access_token
-@use_params('id')
-def book_info(request: HttpRequest, params: dict):
-    book_id = params['id']
-
+def book_info(request: HttpRequest, id, book_id:int):
     try:
         book = Book.objects.get(id=book_id)
     except:
@@ -51,11 +48,11 @@ def book_info(request: HttpRequest, params: dict):
     return JsonResponse(data)
 
 
+@require_http_methods(['POST'])
 @check_access_token
 @use_member
-@use_body('id', 'qrcode')
-def borrow_book(request: HttpRequest, member: Member, body: dict):
-    book_id = body['id']
+@use_body('qrcode')
+def borrow_book(request: HttpRequest, book_id: int, member:Member, body: dict,**kwargs):
     qrcode = body['qrcode']
 
     if qrcode != settings.QRCODE:
@@ -73,15 +70,16 @@ def borrow_book(request: HttpRequest, member: Member, body: dict):
     book.save()
     BookRecord.objects.create(borrower_id=member.id, book_id=book.id)
 
-    return HttpResponse(status=200)
+    return JsonResponse({}, status=200)
+
 
 @require_http_methods(['POST'])
+@check_access_token
 @use_member
-@use_body('id', 'qrcode')
-def return_book(request: HttpRequest, member: Member, body: dict):
-    book_id = body['id']
+@use_body('qrcode')
+def return_book(request: HttpRequest, book_id: int, member:Member, body: dict,**kwargs):    
     qrcode = body['qrcode']
-
+    
     if qrcode != settings.QRCODE:
         return JsonResponse({'error': 'ERR_INVALID_QR'}, status=400)
 
@@ -108,8 +106,9 @@ def return_book(request: HttpRequest, member: Member, body: dict):
 
 
 @require_http_methods(['GET'])
+@check_access_token
 @use_member
-def borrowed_books(request: HttpRequest, member: Member):
+def borrowed_books(request: HttpRequest, id, member: Member):
     records = BookRecord.objects.filter(borrower=member, actual_return=None)
 
     data = { 

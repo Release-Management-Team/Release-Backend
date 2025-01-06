@@ -15,10 +15,7 @@ def check_access_token(func):
     """
 
     @wraps(func)
-    def decorated(request, *args, **kwargs):
-        if settings.TEST_WITHOUT_JWT == True:
-            return func(request, **kwargs)
-            
+    def decorated(request, **kwargs):
         if not 'Access' in request.headers:
             return JsonResponse({'error': 'ERR_MISSING_TOKEN'}, status=401)
 
@@ -32,17 +29,13 @@ def check_access_token(func):
         if payload['token_type'] != 'ACCESS' or payload['exp'] < int(datetime.datetime.now().timestamp()):
             return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
 
-        student_id = payload['id']    
-        return func(request, id=student_id, **kwargs)
+        return func(request, **kwargs, id=payload['id'])
     
     return decorated
 
 
 def check_refresh_token(func):
-    def decorated(request, *args, **kwargs):
-        if settings.TEST_WITHOUT_JWT == True:
-            return func(request, **kwargs)
-        
+    def decorated(request, *args, **kwargs):        
         token = request.headers.get('X-Refresh_Token')
 
         if not token:
@@ -66,12 +59,12 @@ def check_refresh_token(func):
 
 def use_member(func):
     @wraps(func)
-    def decorated(request, id):
+    def decorated(request, **kwargs):
         try:
-            member = Member.objects.get(id=id)
+            member = Member.objects.get(id=kwargs['id'])
         except Member.DoesNotExist:
             return JsonResponse({'error': 'ERR_MEMBER_DOES_NOT_EXIST'}, status=401)
         
-        return func(request, member=member)
+        return func(request,**kwargs, member=member)
     
     return decorated
