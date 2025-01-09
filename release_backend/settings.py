@@ -24,7 +24,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-TEST_WITHOUT_JWT = os.environ.get('TEST_WITHOUT_JWT').lower() == 'true'
 
 ACCESS_TOKEN_EXPIRE = os.environ.get('ACCESS_TOKEN_EXPIRE')
 REFRESH_TOKEN_EXPIRE = os.environ.get('REFRESH_TOKEN_EXPIRE')
