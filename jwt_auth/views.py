@@ -14,7 +14,7 @@ from utils.encryption import checkpw
 
 @require_http_methods(['GET'])
 @check_access_token
-def validate_access(request):
+def validate_access(request, **kwargs):
     """
     Case: Client calls this view initially
     Require: access token
@@ -58,7 +58,7 @@ def login(request, body):
 
 @require_http_methods(['GET'])
 @check_refresh_token
-def refresh_token(request):
+def refresh_token(request, **kwargs):
     """
     Case: Access token is invalid or expired
     Require: access token, refresh token 

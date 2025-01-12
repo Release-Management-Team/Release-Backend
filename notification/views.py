@@ -8,7 +8,7 @@ from utils.decorators import use_body
 @check_access_token
 @use_member
 @use_body('fcm_token')
-def upload_fcm_token(request: HttpRequest, member: Member, body: dict):
+def upload_fcm_token(request: HttpRequest, member: Member, body: dict, **kwargs):
     member.fcm_token = body['fcm_token']
     member.save()
 

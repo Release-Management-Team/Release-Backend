@@ -7,7 +7,7 @@ from .models import Notice
 from jwt_auth.decorators import check_access_token, use_member
 
 @check_access_token
-def notices(request: HttpRequest):
+def notices(request: HttpRequest, **kwargs):
     notices = [
         {
             'title': notice.title,
