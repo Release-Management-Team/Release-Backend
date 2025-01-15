@@ -2,5 +2,6 @@ from django.urls import path
 from . import views 
 
 urlpatterns = [
-    path('list', views.notices),
+    path("", views.notice_list),
+    path("<int:notice_id>", views.notice_detail),
 ]
