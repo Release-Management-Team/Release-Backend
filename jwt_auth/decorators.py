@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.http import JsonResponse
 
-from members.models import Member
+from members.models import Member, Role
 
 import jwt
 import datetime
@@ -68,3 +68,16 @@ def use_member(func):
         return func(request,**kwargs, member=member)
     
     return decorated
+
+
+def is_staff(func):
+    @wraps(func)
+    def decorator(request, **kwargs):
+        member = kwargs['member']
+        
+        if member.role != Role.STAFF:
+            return JsonResponse(data={"error": "Need staff authority"},status=403)
+        
+        return func(request, **kwargs)
+
+    return decorator 
