@@ -46,7 +46,7 @@
         "phone": "01000000000",
         "email": "test0@gmail.com",
         "state": 0,
-        "role": 1,
+        "role": 0,
         "message": "hi",
         "image": false,
         "joined_semester": "2020.03",

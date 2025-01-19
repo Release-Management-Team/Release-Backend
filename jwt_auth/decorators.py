@@ -73,8 +73,13 @@ def use_member(func):
 def is_staff(func):
     @wraps(func)
     def decorator(request, **kwargs):
-        member = kwargs['member']
-        
+        id = kwargs['id']
+
+        try:       
+            member = Member.objects.get(id=id)
+        except Member.DoesNotExist:
+            return JsonResponse({}, status=404)
+
         if member.role != Role.STAFF:
             return JsonResponse(data={"error": "Need staff authority"},status=403)
         
