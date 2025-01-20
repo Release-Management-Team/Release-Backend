@@ -31,15 +31,14 @@ def notice_detail(request: HttpRequest, notice_id: int, **kwargs):
 
 def get_notice_list():
     notices = [
-        json.dumps({
+        {
             "id": notice.id,
             'title': notice.title,
             'content': notice.content,
             'date': notice.date,
             'important': notice.important,
             'expired': notice.expired,
-        }, cls=DjangoJSONEncoder)
-        for notice in Notice.objects.all()
+        } for notice in Notice.objects.all()
     ]
     return JsonResponse({"notices": notices})
 
@@ -53,7 +52,7 @@ def create_notice(request, id, body, **kwargs):
         important = body['important']
     )
 
-    notice_json = {
+    notice = {
         "id": notice.id,
         "title": notice.title,
         "content": notice.content,
@@ -62,7 +61,7 @@ def create_notice(request, id, body, **kwargs):
         "expired": notice.expired    
     }
 
-    return JsonResponse({"notice": notice_json}, status=200)
+    return JsonResponse({"notice": notice}, status=200)
 
 
 def get_notice(notice_id: int):
