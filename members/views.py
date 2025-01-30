@@ -1,16 +1,18 @@
 import re
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+
+from .models import Member, Device
+from notices.models import Notice
+from activities.models import Event
 
 from jwt_auth.decorators import *
 from utils.decorators import *
 from utils.encryption import hashpw, checkpw
 from utils.storage import put_base64_image
 
-from notices.models import Notice
-from activities.models import Event
 
 
 @require_http_methods(['GET'])
@@ -106,6 +108,25 @@ def change_password(request, body, member, **kwargs):
     member.save()
 
     return JsonResponse({}, status=200)
+
+
+@require_http_methods(['POST'])
+@check_access_token
+@use_member
+@use_body('uuid', 'fcm_token')
+def register_device(request:HttpRequest, body: dict, member: Member, **kwargs):
+    uuid = body['uuid']
+    fcm_token = body['fcm_token']
+ 
+    device, _ = Device.objects.get_or_create(
+        uuid = uuid,
+        defaults={
+            "fcm_token" : fcm_token,
+            "member"    : member
+        }
+    )
+    
+    return JsonResponse({"uuid": str(device.uuid)}, status=201)
 
 
 @require_http_methods(['GET'])
