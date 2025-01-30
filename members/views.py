@@ -118,7 +118,7 @@ def register_device(request:HttpRequest, body: dict, member: Member, **kwargs):
     uuid = body['uuid']
     fcm_token = body['fcm_token']
  
-    device, _ = Device.objects.get_or_create(
+    device, created = Device.objects.get_or_create(
         uuid = uuid,
         defaults={
             "fcm_token" : fcm_token,
@@ -126,7 +126,10 @@ def register_device(request:HttpRequest, body: dict, member: Member, **kwargs):
         }
     )
     
-    return JsonResponse({"uuid": str(device.uuid)}, status=201)
+    if created == True:
+        return JsonResponse({"uuid": str(device.uuid)}, status=201)
+    else:
+        return JsonResponse({"uuid": str(device.uuid)}, status=200)
 
 
 @require_http_methods(['GET'])

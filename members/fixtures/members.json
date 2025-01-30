@@ -5,7 +5,6 @@
     "fields": {
         "name": "릴리즈",
         "password": "JDJiJDEyJHd5WmZYcTFjd05RRnphSWlxOEdBTC5EN0kwQ2txWkdqR2EvNUhtWDVaUHN6U052WTBLall1",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000005",
         "email": "test5@gmail.com",
@@ -23,7 +22,6 @@
     "fields": {
         "name": "김현섭",
         "password": "JDJiJDEyJDdKS1RZbEg1NzFQbC5ubmJuUkpwQWVVWC9aTWRNUmUzTUh3djJzYXdSUlFFYzZ0Tmg4WlY2",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000003",
         "email": "test3@gmail.com",
@@ -41,7 +39,6 @@
     "fields": {
         "name": "정재헌",
         "password": "JDJiJDEyJEFmVnQ4NC9xY2NtMEE4T3cudGlWdC43NFVOTkRKaDZ2Q2k2UnZZQklmdDFhWVRWWHEyY1Nh",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000000",
         "email": "test0@gmail.com",
@@ -59,7 +56,6 @@
     "fields": {
         "name": "신지원",
         "password": "JDJiJDEyJG5iaTduNDBWQzNGY3FhdmRtQTh5dWUuNDEwMmpZVWN4RlFSZDVBVUFtY3luUkI3Mlk3ZWJt",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000002",
         "email": "test2@gmail.com",
@@ -77,7 +73,6 @@
     "fields": {
         "name": "신현수",
         "password": "JDJiJDEyJFNXNkM0eVc2TTRVdmpxdVNiRFZoNGVrVTJnRXZsa1dlOW1KRGpMcHRTNXJYTXZWdFdXMGhl",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000001",
         "email": "test1@gmail.com",
@@ -95,7 +90,6 @@
     "fields": {
         "name": "이호준",
         "password": "JDJiJDEyJDloLmNvSzNyZ3UyTE1yT3FTMmpMVHVOVnowZjhIR0RCaExMbG9mb0tmRm5jR0U2c2VxV1Jl",
-        "fcm_token": "",
         "department": "컴퓨터공학과",
         "phone": "01000000004",
         "email": "test4@gmail.com",

@@ -3,7 +3,7 @@ import json, bcrypt, requests
 from django.test import TestCase
 from django.conf import settings
 
-from .models import Member
+from .models import Member, Device
 
 from utils.encryption import checkpw
 
@@ -95,13 +95,11 @@ class MemberTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-
     def test_get_members_list(self):
         response = self.client.get('/member/', headers=self.headers)
         json_response = response.json()
         profiles = json_response.get('profiles')
         
-
 
     def test_get_member_profile(self):
         id = '20231560'
@@ -117,5 +115,40 @@ class MemberTestCase(TestCase):
         self.assertEqual(member.image, json_response.get('image'))
         self.assertEqual(member.state, json_response.get('state'))
         self.assertEqual(member.role, json_response.get('role'))
+
+
+
+    def test_register_device(self):
+        uuid = "550e8400-e29b-41d4-a716-446655440000"
+        fcm_token = "this is fcm token"
+        data = {
+            'uuid'      : uuid,
+            'fcm_token' : fcm_token
+        }
+
+        response = self.client.post('/member/register-device', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
         
+        response_json = response.json()
+        device = Device.objects.get(uuid=uuid)
+        self.assertEqual(response_json['uuid'], str(device.uuid))
+        self.assertEqual(fcm_token, device.fcm_token)
+
+    def test_register_device_already_exists(self):
+        uuid = "550e8400-e29b-41d4-a716-446655440000"
+        fcm_token = "this is fcm token"
+        data = {
+            'uuid'      : uuid,
+            'fcm_token' : fcm_token
+        }
+
+        response = self.client.post('/member/register-device', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 201)
         
+        response_json = response.json()
+        device = Device.objects.get(uuid=uuid)
+        self.assertEqual(response_json['uuid'], str(device.uuid))
+        self.assertEqual(fcm_token, device.fcm_token)
+
+        response = self.client.post('/member/register-device', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
