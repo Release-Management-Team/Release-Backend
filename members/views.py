@@ -50,10 +50,16 @@ def member_profile(request, student_id: int, **kwargs):
     }, status=200)
 
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'PUT'])
 @check_access_token
 @use_member
 def my_profile(request, member: Member, **kwargs):
+    if request.method == 'GET':
+        return get_my_profile(member)
+    else:
+        return update_my_profile(request, member=member, **kwargs)
+    
+def get_my_profile(member: Member):
     return JsonResponse({
         'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default',
         'name': member.name,
@@ -68,12 +74,10 @@ def my_profile(request, member: Member, **kwargs):
         'new': member.new,
     }, status=200)
 
-
-@require_http_methods(['POST'])
-@check_access_token
-@use_member
 @use_body('phone', 'email', 'message', 'image')
-def update_my_profile(request, member, body, **kwargs):
+def update_my_profile(request, body, **kwargs):
+    member = kwargs['member']
+    
     if body['phone'] != '':
         member.phone = body['phone']
     

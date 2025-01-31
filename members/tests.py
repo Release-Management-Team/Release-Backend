@@ -55,7 +55,7 @@ class MemberTestCase(TestCase):
             'message': 'you cracked',
             'image': 'dGVzdCBpbWFnZQ==' if settings.TEST_STORAGE else ''
         }
-        response = self.client.post('/member/my-profile/update', headers=self.headers, data=json.dumps(data), content_type='application/json')
+        response = self.client.put('/member/my-profile', headers=self.headers, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/member/my-profile', headers=self.headers, content_type='application/json')
