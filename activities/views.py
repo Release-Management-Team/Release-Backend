@@ -9,7 +9,7 @@ from utils.decorators import use_body
 
 @require_http_methods(['GET'])
 @check_access_token
-def list_studies_projects(request: HttpRequest):
+def list_studies_projects(request: HttpRequest, **kwargs):
     studies = [
         {
             'type': 'study',
@@ -39,7 +39,7 @@ def list_studies_projects(request: HttpRequest):
 
 @require_http_methods(['GET'])
 @check_access_token
-def list_event(request: HttpRequest):
+def list_event(request: HttpRequest, **kwargs):
     events = [
         {
             'name': event.name,

@@ -31,6 +31,9 @@ REFRESH_TOKEN_EXPIRE = os.environ.get('REFRESH_TOKEN_EXPIRE')
 # QR code
 QRCODE = os.environ.get('QRCODE')
 
+# Firebase admin key
+FCM_KEY = os.environ.get('FCM_APIKEY')
+
 # Storage
 STORAGE_HOST = os.environ.get('STORAGE_HOST')
 STORAGE_ACCESS_KEY = os.environ.get('STORAGE_ACCESS_KEY')
@@ -57,7 +60,6 @@ INSTALLED_APPS = [
     'members',
     'activities',
     'notices',
-    'notification',
     'jwt_auth'
 ]
 

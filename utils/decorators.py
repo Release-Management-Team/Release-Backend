@@ -11,12 +11,12 @@ def use_body(*fields: str):
         @wraps(func)
         def wrapper(request, **kwargs):
             if not request.body:
-                return JsonResponse({'error': 'ERR_MISSING_FIELD'})
+                return JsonResponse({'error': 'ERR_MISSING_FIELD'}, status=400)
             body = json.loads(request.body)
 
             for name in fields:
                 if name not in body:
-                    return JsonResponse({'error': 'ERR_MISSING_FIELD'})
+                    return JsonResponse({'error': 'ERR_MISSING_FIELD'}, status=400)
             
             return func(request, **kwargs, body=body)
         
@@ -28,10 +28,10 @@ def use_params(*fields: str):
         @wraps(func)
         def wrapper(request, **kwargs):
             if not request.GET:
-                return JsonResponse({'error': 'ERR_MISSING_FIELD'})
+                return JsonResponse({'error': 'ERR_MISSING_FIELD'}, status=400)
             for name in fields:
                 if name not in request.GET:
-                    return JsonResponse({'error': 'ERR_MISSING_FIELD'})
+                    return JsonResponse({'error': 'ERR_MISSING_FIELD'}, status=400)
             
             params = request.GET
             return func(request, **kwargs, params=params)
