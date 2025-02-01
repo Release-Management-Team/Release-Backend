@@ -33,6 +33,7 @@ QRCODE = os.environ.get('QRCODE')
 
 # Firebase admin key
 FCM_KEY = os.environ.get('FCM_APIKEY')
+FIREBASE_PROJECT_ID = os.environ.get('FIREBASE_PROJECT_ID')
 
 # Storage
 STORAGE_HOST = os.environ.get('STORAGE_HOST')

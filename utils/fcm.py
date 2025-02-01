@@ -3,7 +3,7 @@ from pyfcm import FCMNotification
 from django.conf import settings
 
 def send_notification(fcm_token:str, title, body, image=None):
-    push_service = FCMNotification(settings.FCM_KEY)
+    push_service = FCMNotification(settings.FCM_KEY, settings.FIREBASE_PROJECT_ID)
     return push_service.notify(
         fcm_token=fcm_token, 
         notification_title=title, 
