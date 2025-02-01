@@ -16,6 +16,8 @@ charset-normalizer==3.3.2
 cryptography==44.0.0
 Django==5.1.1
 django-environ==0.11.2
+djangorestframework==3.15.2
+drf-yasg==1.21.8
 firebase-admin==6.6.0
 frozenlist==1.5.0
 google-api-core==2.24.0
@@ -32,10 +34,12 @@ grpcio==1.70.0
 grpcio-status==1.70.0
 httplib2==0.22.0
 idna==3.8
+inflection==0.5.1
 jmespath==1.0.1
 minio==7.2.8
 msgpack==1.1.0
 multidict==6.1.0
+packaging==24.2
 propcache==0.2.1
 proto-plus==1.25.0
 protobuf==5.29.3
@@ -48,6 +52,8 @@ pyfcm==2.0.7
 PyJWT==2.9.0
 pyparsing==3.2.1
 python-dateutil==2.9.0.post0
+pytz==2025.1
+PyYAML==6.0.2
 requests==2.32.3
 rsa==4.9
 s3transfer==0.10.4
