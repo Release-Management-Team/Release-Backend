@@ -18,12 +18,18 @@ from utils.storage import put_base64_image
 @require_http_methods(['GET'])
 @check_access_token
 def members_list(request, **kwargs):
-    profiles = Member.objects.values('id', 'name', 'state', 'role', 'message', 'image')    
-    profiles_list = list(profiles)
+    profiles = [
+        {
+            "id": member.id,
+            "name": member.name,
+            "state": member.state,
+            "role": member.role,
+            "message": member.message,
+            "image": f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default'
+        } for member in Member.objects.all()
+    ]
 
-    return JsonResponse({
-        'profiles': profiles_list,
-    }, safe=False, status=200)
+    return JsonResponse({'profiles': profiles,}, safe=False, status=200)
 
 
 @require_http_methods(['GET'])
@@ -40,16 +46,22 @@ def member_profile(request, student_id: int, **kwargs):
         'state': member.state,
         'role': member.role,
         'message': member.message,
-        'image': member.image
+        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default'
     }, status=200)
 
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'PUT'])
 @check_access_token
 @use_member
 def my_profile(request, member: Member, **kwargs):
+    if request.method == 'GET':
+        return get_my_profile(member)
+    else:
+        return update_my_profile(request, member=member, **kwargs)
+    
+def get_my_profile(member: Member):
     return JsonResponse({
-        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else '',
+        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default',
         'name': member.name,
         'role': member.role,
         'message': member.message,
@@ -62,12 +74,10 @@ def my_profile(request, member: Member, **kwargs):
         'new': member.new,
     }, status=200)
 
-
-@require_http_methods(['POST'])
-@check_access_token
-@use_member
 @use_body('phone', 'email', 'message', 'image')
-def update_my_profile(request, member, body, **kwargs):
+def update_my_profile(request, body, **kwargs):
+    member = kwargs['member']
+    
     if body['phone'] != '':
         member.phone = body['phone']
     
