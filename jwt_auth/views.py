@@ -8,33 +8,43 @@ from members.models import Member
 
 from .tokens import *
 from .decorators import *
+from .dto import *
 
 from utils.decorators import use_body
 from utils.encryption import checkpw
 
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: "Success",
+        403: "Forbidden"
+    }
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_access_token
 def validate_access(request, **kwargs):
-    """
-    Case: Client calls this view initially
-    Require: access token
-    Return: 200 response / 403 response    
-    """
-
     return JsonResponse({}, status=200)
-
 
 
 @require_http_methods(['POST'])
 @csrf_exempt
 @use_body('id', 'password')
+@swagger_auto_schema(
+    method='post',
+    request_body= login_dto.request,
+    responses={
+        200: login_dto.response_200
+    }
+)
+@api_view(['POST'])
 def login(request, body):
-    """
-    Case: both access, require token are invalid or expired
-    Require: ID, password
-    Return: New access token, refresh token / 401 response
-    """
-
     id = body.get('id')
     pw = body.get('password')
 
@@ -56,15 +66,17 @@ def login(request, body):
     })
 
 
+@swagger_auto_schema(
+    method='get',
+    responses={
+        200: refresh_token_dto.response_200,
+        403: "Forbidden"
+    }
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_refresh_token
 def refresh_token(request, **kwargs):
-    """
-    Case: Access token is invalid or expired
-    Require: access token, refresh token 
-    Return: New access, refresh token / 401 response
-    """
-
     old_access_token = request.headers.get('Access')[7:]
 
     if not old_access_token:
