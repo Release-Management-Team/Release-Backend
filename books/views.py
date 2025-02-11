@@ -8,12 +8,24 @@ from members.models import Member
 from .models import Book, BookRecord, BookTag, BookState
 
 from jwt_auth.decorators import check_access_token, use_member
-from utils.decorators import use_body, use_params
+from utils.decorators import use_body
+
+from .dto import *
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
 
 
+@swagger_auto_schema(
+    method='GET',
+    manual_parameters=get_book_list_dto.request_param,
+    responses={
+        200: get_book_list_dto.response_200
+    }
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_access_token
-def book_list(request: HttpRequest, id):
+def book_list(request: HttpRequest, id: int):
     data = [
         {
             'id': book.id,
@@ -25,34 +37,50 @@ def book_list(request: HttpRequest, id):
         }
         for book in Book.objects.all()
     ]
-    return JsonResponse({'books': data})
+    return JsonResponse({'books': data}, status=200)
 
-
+    
+@swagger_auto_schema(        
+    method='GET',
+    manual_parameters=get_book_detail_dto.request_param,
+    responses={
+        200: get_book_detail_dto.response_200,
+    }
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_access_token
-def book_info(request: HttpRequest, id, book_id:int):
+def book_info(request: HttpRequest, id: int, book_id: int):
     try:
         book = Book.objects.get(id=book_id)
-    except:
+    except Book.DoesNotExist:
         return JsonResponse({'error': 'ERR_INVALID_BOOK_ID'}, status=400)
     
     data = {
         'id': book.id,
         'title': book.title,
         'availability': book.availability,
-        'available_date': '',
         'author': book.author,
         'tags': [t.tag for t in book.tags.all()],
         'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
     }
-    return JsonResponse(data)
+    return JsonResponse(data, status=200)
 
 
+@swagger_auto_schema(
+    method='POST',
+    manual_parameters=borrow_book_dto.request_param,
+    request_body=borrow_book_dto.request_body,
+    responses={
+        200: borrow_book_dto.response_200,
+    }
+)
+@api_view(['POST'])
 @require_http_methods(['POST'])
 @check_access_token
 @use_member
 @use_body('qrcode')
-def borrow_book(request: HttpRequest, book_id: int, member:Member, body: dict,**kwargs):
+def borrow_book(request: HttpRequest, book_id: int, member:Member, body: dict, **kwargs):
     qrcode = body['qrcode']
 
     if qrcode != settings.QRCODE:
@@ -73,11 +101,20 @@ def borrow_book(request: HttpRequest, book_id: int, member:Member, body: dict,**
     return JsonResponse({}, status=200)
 
 
+@swagger_auto_schema(
+    method='POST',
+    manual_parameters=return_book_dto.request_param,
+    request_body=return_book_dto.request_body,
+    responses={
+        200: return_book_dto.response_200,
+    }
+)
+@api_view(['POST'])
 @require_http_methods(['POST'])
 @check_access_token
 @use_member
 @use_body('qrcode')
-def return_book(request: HttpRequest, book_id: int, member:Member, body: dict,**kwargs):    
+def return_book(request: HttpRequest, book_id: int, member: Member, body: dict, **kwargs):    
     qrcode = body['qrcode']
     
     if qrcode != settings.QRCODE:
@@ -102,9 +139,17 @@ def return_book(request: HttpRequest, book_id: int, member:Member, body: dict,**
     book.availability = BookState.AVAILABLE
     book.save()
 
-    return JsonResponse({})
+    return JsonResponse({}, status=200)
 
 
+@swagger_auto_schema(
+    method='GET',
+    manual_parameters=get_borrowed_books_dto.request_param,
+    responses={
+        200: get_borrowed_books_dto.response_200
+    }
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_access_token
 @use_member
@@ -125,4 +170,4 @@ def borrowed_books(request: HttpRequest, id, member: Member):
         ]
     }
 
-    return JsonResponse(data)
+    return JsonResponse(data, status=200)
