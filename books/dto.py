@@ -3,14 +3,20 @@ from drf_yasg import openapi
 book_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
-        'title': openapi.Schema(type=openapi.TYPE_STRING),
-        'availability': openapi.Schema(type=openapi.TYPE_STRING),
-        'author': openapi.Schema(type=openapi.TYPE_STRING),
-        'tags': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING)),
-        'image': openapi.Schema(type=openapi.TYPE_STRING)
+        'book': openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'title': openapi.Schema(type=openapi.TYPE_STRING),
+                'availability': openapi.Schema(type=openapi.TYPE_STRING),
+                'author': openapi.Schema(type=openapi.TYPE_STRING),
+                'tags': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING)),
+                'image': openapi.Schema(type=openapi.TYPE_STRING)
+            },
+            required=['id', 'title', 'availability', 'author', 'image']
+        )
     },
-    required=['id', 'title', 'availability', 'author', 'tags', 'image']
+    required=["book"]
 )
 
 # GET
@@ -22,7 +28,7 @@ class get_book_list_dto:
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'books': [],
+                'books': openapi.Schema(type=openapi.TYPE_ARRAY, items=book_schema)
             },
             required=[]
         ),

@@ -1,20 +1,47 @@
 from drf_yasg import openapi
 
+
+notice_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        "notice": openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the notice'),
+                'title': openapi.Schema(type=openapi.TYPE_STRING, description='Title of the notice'),
+                'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content of the notice'),
+                'date': openapi.Schema(type=openapi.TYPE_STRING, description='Date of the notice'),
+                'important': openapi.Schema(type=openapi.TYPE_STRING, description='Importance of the notice'),
+                'expired': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether the notice is expired')
+            },
+            required=['id', 'title', 'content', 'date', 'important', 'expired']
+        ),
+    },
+    required=["notice"]
+)
+
+
 # GET
 class get_notice_list_dto:
     request_param = []
     
     response_200 = openapi.Response(
         description="Successful response",
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'notices': openapi.Schema(type=openapi.TYPE_ARRAY, items=notice_schema)
+            }
+        ),
         examples={
             "application/json": {
                 "notices": [{
-                    "id": "int",
-                    "title": "string",
-                    "content": "string",
-                    "date": "string",
-                    "important": "string",
-                    "expired": "bool"
+                    "id": 1,
+                    "title": "title",
+                    "content": "content",
+                    "date": "date",
+                    "important": "important",
+                    "expired": "expired"
                 }]
             }
         }
@@ -37,6 +64,7 @@ class create_notice_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
+        schema=notice_schema,
         examples={
             "application/json": {
                 "notice": {
@@ -65,14 +93,17 @@ class get_notice_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
+        schema=notice_schema,
         examples={
             "application/json": {
-                "id": "int",
-                "title": "string",
-                "content": "string",
-                "date": "string",
-                "important": "string",
-                "expired": "bool"
+                "notice": {
+                    "id": "int",
+                    "title": "string",
+                    "content": "string",
+                    "date": "string",
+                    "important": "string",
+                    "expired": "bool"
+                }   
             }
         }
     )
@@ -101,16 +132,17 @@ class update_notice_dto:
 
     response_200 = openapi.Response(
         description="Successful response",
+        schema=notice_schema,
         examples={
             "application/json": {
                 "notice": {
-                    "id": 1,
-                    "title": "title",
-                    "content": "content",
-                    "date": "date",
-                    "important": "important",
-                    "expired": "expired"
-                }
+                    "id": "int",
+                    "title": "string",
+                    "content": "string",
+                    "date": "string",
+                    "important": "string",
+                    "expired": "bool"
+                }   
             }
         }
     )
@@ -129,6 +161,10 @@ class delete_notice_dto:
 
     response_200 = openapi.Response(
         description="Successful response",
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={}
+        ),
         examples={
             "application/json": {}
         }

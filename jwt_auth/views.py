@@ -19,9 +19,9 @@ from drf_yasg.utils import swagger_auto_schema
 
 @swagger_auto_schema(
     method='get',
+    manual_parameters=validate_access_dto.request_param,
     responses={
-        200: "Success",
-        403: "Forbidden"
+        200: validate_access_dto.response_200,
     }
 )
 @api_view(['GET'])
@@ -31,17 +31,17 @@ def validate_access(request, **kwargs):
     return JsonResponse({}, status=200)
 
 
-@require_http_methods(['POST'])
-@csrf_exempt
-@use_body('id', 'password')
 @swagger_auto_schema(
     method='post',
-    request_body= login_dto.request,
+    request_body= login_dto.request_body,
     responses={
         200: login_dto.response_200
     }
 )
 @api_view(['POST'])
+@require_http_methods(['POST'])
+@csrf_exempt
+@use_body('id', 'password')
 def login(request, body):
     id = body.get('id')
     pw = body.get('password')
@@ -66,9 +66,9 @@ def login(request, body):
 
 @swagger_auto_schema(
     method='get',
+    manual_parameters=refresh_token_dto.request_param,
     responses={
         200: refresh_token_dto.response_200,
-        403: "Forbidden"
     }
 )
 @api_view(['GET'])

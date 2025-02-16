@@ -1,6 +1,5 @@
 import json
 from django.http import HttpRequest, JsonResponse
-from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.http import require_http_methods
 
 from .models import Notice

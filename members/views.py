@@ -20,7 +20,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=member_list_dto.request,
+    manual_parameters=member_list_dto.request_param,
     responses={
         200: member_list_dto.response_200,
     }
@@ -45,7 +45,7 @@ def members_list(request: HttpRequest, **kwargs):
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=member_profile_dto.request,
+    manual_parameters=member_profile_dto.request_param,
     responses={
         200: member_profile_dto.response_200,
     }
@@ -71,12 +71,12 @@ def member_profile(request: HttpRequest, student_id: int, **kwargs):
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=get_my_profile_dto.request,
+    manual_parameters=get_my_profile_dto.request_param,
     responses={200: get_my_profile_dto.response_200}
 )
 @swagger_auto_schema(
     method='put',
-    request_body=update_my_profile_dto.request,
+    request_body=update_my_profile_dto.request_body,
     responses={200: update_my_profile_dto.response_200}
 )
 @api_view(['GET', 'PUT'])
@@ -131,7 +131,7 @@ def update_my_profile(request: HttpRequest, body: dict, **kwargs):
 
 @swagger_auto_schema(
     method='post',
-    request_body=change_password_dto.request,
+    request_body=change_password_dto.request_body,
     responses={
         200: change_password_dto.response_200,
     }
@@ -162,7 +162,7 @@ def change_password(request: HttpRequest, body: dict, member: Member, **kwargs):
 
 @swagger_auto_schema(
     method='post',
-    request_body=register_device_dto.request,
+    request_body=register_device_dto.request_body,
     responses={
         200: register_device_dto.response_200,
         201: register_device_dto.response_201,  
