@@ -1,6 +1,5 @@
 import json
 from django.http import HttpRequest, JsonResponse
-from django.core.serializers.json import DjangoJSONEncoder
 from django.views.decorators.http import require_http_methods
 
 from .models import Notice
@@ -8,6 +7,22 @@ from .models import Notice
 from jwt_auth.decorators import check_access_token, is_staff
 from utils.decorators import use_body
 
+from .dto import *
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=get_notice_list_dto.request_param,
+    responses={200: get_notice_list_dto.response_200}    
+)
+@swagger_auto_schema(
+    method='post',
+    manual_parameters=create_notice_dto.request_param,
+    request_body=create_notice_dto.request_body,
+    responses={200: create_notice_dto.response_200}
+)
+@api_view(['GET', 'POST'])
 @require_http_methods(["GET", "POST"])
 @check_access_token
 def notice_list(request: HttpRequest, **kwargs):
@@ -17,13 +32,30 @@ def notice_list(request: HttpRequest, **kwargs):
         return create_notice(request, id=kwargs['id'])
 
 
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=get_notice_dto.request_param,
+    responses={200: get_notice_dto.response_200}
+)
+@swagger_auto_schema(
+    method='put',
+    manual_parameters=update_notice_dto.request_param,
+    request_body=update_notice_dto.request_body,
+    responses={200: update_notice_dto.response_200}
+)
+@swagger_auto_schema(
+    method='delete',
+    manual_parameters=delete_notice_dto.request_param,
+    responses={200: delete_notice_dto.response_200}
+)
+@api_view(['GET', 'PUT', 'DELETE'])
 @require_http_methods(['GET', 'PUT', 'DELETE'])
 @check_access_token
 def notice_detail(request: HttpRequest, notice_id: int, **kwargs):
     if request.method == 'GET':
         return get_notice(notice_id)
     elif request.method == 'PUT':
-        # return JsonResponse({}, status=400) 
         return update_notice(request, notice_id=notice_id, **kwargs)
     else:
         return delete_notice(request, notice_id=notice_id, **kwargs)
