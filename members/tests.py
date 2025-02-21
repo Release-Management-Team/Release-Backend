@@ -41,7 +41,7 @@ class MemberTestCase(TestCase):
         response = self.client.get('/member/my-profile', headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
-        json_response = response.json()
+        json_response = response.json().get('member')
         self.assertEqual('20201641', json_response.get('id'))
         self.assertEqual('정재헌', json_response.get('name'))
         self.assertEqual('01000000000', json_response.get('phone'))
@@ -59,7 +59,7 @@ class MemberTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/member/my-profile', headers=self.headers, content_type='application/json')
-        member = response.json()
+        member = response.json().get('member')
         self.assertEqual(member['phone'], '01012345678')
         self.assertEqual(member['email'], 'deadbeaf@gmail.com')
         self.assertEqual(member['message'], 'you cracked')
@@ -98,7 +98,7 @@ class MemberTestCase(TestCase):
     def test_get_members_list(self):
         response = self.client.get('/member/', headers=self.headers)
         json_response = response.json()
-        profiles = json_response.get('profiles')
+        profiles = json_response.get('members')
         
 
     def test_get_member_profile(self):
@@ -109,12 +109,12 @@ class MemberTestCase(TestCase):
         json_response = response.json()
         member = Member.objects.get(id=id)
         
-        self.assertEqual(member.id, json_response.get('id'))
-        self.assertEqual(member.name, json_response.get('name'))
-        self.assertEqual(member.message, json_response.get('message'))
-        self.assertEqual(member.image, json_response.get('image'))
-        self.assertEqual(member.state, json_response.get('state'))
-        self.assertEqual(member.role, json_response.get('role'))
+        self.assertEqual(member.id, json_response.get('member').get('id'))
+        self.assertEqual(member.name, json_response.get('member').get('name'))
+        self.assertEqual(member.message, json_response.get('member').get('message'))
+        self.assertEqual(member.image, json_response.get('member').get('image'))
+        self.assertEqual(member.state, json_response.get('member').get('state'))
+        self.assertEqual(member.role, json_response.get('member').get('role'))
 
 
 

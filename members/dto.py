@@ -3,33 +3,33 @@ from drf_yasg import openapi
 member_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        'id': openapi.Schema(type=openapi.TYPE_STRING),
         'name': openapi.Schema(type=openapi.TYPE_STRING),
-        'state': openapi.Schema(type=openapi.TYPE_STRING),
-        'role': openapi.Schema(type=openapi.TYPE_STRING),
+        'state': openapi.Schema(type=openapi.TYPE_INTEGER),
+        'role': openapi.Schema(type=openapi.TYPE_INTEGER),
         'message': openapi.Schema(type=openapi.TYPE_STRING),
         'image': openapi.Schema(type=openapi.TYPE_STRING)
     },
-    required=['id', 'name', 'state', 'role', 'message', 'image']
+    required=['id', 'name', 'state', 'role', 'image']
 )
 
 my_profile_schema = openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
-        'image': openapi.Schema(type=openapi.TYPE_STRING),
+        'id': openapi.Schema(type=openapi.TYPE_STRING),
         'name': openapi.Schema(type=openapi.TYPE_STRING),
-        'role': openapi.Schema(type=openapi.TYPE_STRING),
+        'state': openapi.Schema(type=openapi.TYPE_INTEGER),
+        'image': openapi.Schema(type=openapi.TYPE_STRING),
         'message': openapi.Schema(type=openapi.TYPE_STRING),
-        'id': openapi.Schema(type=openapi.TYPE_INTEGER),
+        'image': openapi.Schema(type=openapi.TYPE_STRING),
+        'role': openapi.Schema(type=openapi.TYPE_INTEGER),
         'department': openapi.Schema(type=openapi.TYPE_STRING),
         'phone': openapi.Schema(type=openapi.TYPE_STRING),
         'email': openapi.Schema(type=openapi.TYPE_STRING),
-        'state': openapi.Schema(type=openapi.TYPE_STRING),
         'joined_semester': openapi.Schema(type=openapi.TYPE_STRING),
         'new': openapi.Schema(type=openapi.TYPE_BOOLEAN),
     },
-        
-    required=['id', 'name', 'state', 'role', 'message', 'image', 'department', 'phone', 'email', 'joined_semester', 'new']
+    required=['id', 'name', 'state', 'role', 'image', 'department', 'phone', 'email', 'joined_semester', 'new']
 )
 
 
@@ -42,7 +42,7 @@ class member_list_dto:
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                'profiles': openapi.Schema(type=openapi.TYPE_ARRAY, items=member_schema)
+                'members': openapi.Schema(type=openapi.TYPE_ARRAY, items=member_schema)
             }
         ),
         examples={
@@ -65,7 +65,13 @@ class member_profile_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
-        schema=member_schema,
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'member': member_schema
+            },
+            required = ['member']
+        ),
         examples={
             "application/json": {
                 "id": 1,
@@ -84,7 +90,13 @@ class get_my_profile_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
-        schema=my_profile_schema,
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'member': my_profile_schema,
+            },
+            required = ['member']
+        ),
         examples={
             "application/json": {
                 'image': "string",

@@ -26,18 +26,20 @@ from drf_yasg.utils import swagger_auto_schema
 @require_http_methods(['GET'])
 @check_access_token
 def book_list(request: HttpRequest, id: int):
-    data = [
-        {
-            'id': book.id,
-            'title': book.title,
-            'availability': book.availability,
-            'author': book.author,
-            'tags': [t.tag for t in book.tags.all()],
-            'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
-        }
-        for book in Book.objects.all()
-    ]
-    return JsonResponse({'books': data}, status=200)
+    data = {
+        "books":[
+            {
+                'id': book.id,
+                'title': book.title,
+                'availability': book.availability,
+                'author': book.author,
+                'tags': [t.tag for t in book.tags.all()],
+                'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
+            }
+            for book in Book.objects.all()    
+        ]
+    }
+    return JsonResponse(data, status=200)
 
     
 @swagger_auto_schema(        
@@ -64,7 +66,9 @@ def book_info(request: HttpRequest, id: int, book_id: int):
         'tags': [t.tag for t in book.tags.all()],
         'image': f'{settings.STORAGE_URL}/book-image/{book.id}' if book.image else ''
     }
-    return JsonResponse(data, status=200)
+    return JsonResponse(data={
+        "book": data
+    }, status=200)
 
 
 @swagger_auto_schema(

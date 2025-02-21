@@ -1,9 +1,6 @@
 from drf_yasg import openapi
 
 book_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        'book': openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 'id': openapi.Schema(type=openapi.TYPE_INTEGER),
@@ -15,9 +12,6 @@ book_schema = openapi.Schema(
             },
             required=['id', 'title', 'availability', 'author', 'image']
         )
-    },
-    required=["book"]
-)
 
 # GET
 class get_book_list_dto:
@@ -152,7 +146,7 @@ class get_borrowed_books_dto:
         schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
-                "books": []
+                "books": openapi.Schema(type=openapi.TYPE_ARRAY, items=book_schema)
             },
             required=[]
         ),
