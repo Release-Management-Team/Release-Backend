@@ -42,7 +42,7 @@ class login_dto:
     
 
 #GET
-class refresh_token_dto:
+class reissue_token_dto:
     request_param = []
     
     response_200 = openapi.Response(

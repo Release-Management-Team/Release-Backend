@@ -19,14 +19,14 @@ class AccountTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_refresh_token(self):
+    def test_reissue_token(self):
         access_token = create_access_token('20201641')
         refresh_token = create_refresh_token()
         headers = {
             'Access': f'Bearer {access_token}',
-            'X-Refresh_Token': refresh_token
+            'X-refresh_Token': refresh_token
         }
-        response = self.client.get('/auth/refresh-token', headers=headers)
+        response = self.client.get('/auth/reissue-token', headers=headers)
         self.assertEqual(response.status_code, 200)
 
         payload = response.json()

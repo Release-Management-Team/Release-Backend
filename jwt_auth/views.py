@@ -66,15 +66,15 @@ def login(request, body):
 
 @swagger_auto_schema(
     method='get',
-    manual_parameters=refresh_token_dto.request_param,
+    manual_parameters=reissue_token_dto.request_param,
     responses={
-        200: refresh_token_dto.response_200,
+        200: reissue_token_dto.response_200,
     }
 )
 @api_view(['GET'])
 @require_http_methods(['GET'])
 @check_refresh_token
-def refresh_token(request, **kwargs):
+def reissue_token(request, **kwargs):
     old_access_token = request.headers.get('Access')[7:]
 
     if not old_access_token:
