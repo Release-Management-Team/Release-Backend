@@ -7,7 +7,7 @@ notice_schema = openapi.Schema(
                 'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the notice'),
                 'title': openapi.Schema(type=openapi.TYPE_STRING, description='Title of the notice'),
                 'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content of the notice'),
-                'date': openapi.Schema(type=openapi.TYPE_STRING, description='Date of the notice'),
+                'date': openapi.Schema(type=openapi.TYPE_STRING, description='Date of the notice(format example: 2025-02-21 13:41:08.477574+00:00)'),
                 'important': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Importance of the notice'),
                 'expired': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether the notice is expired')
             },
