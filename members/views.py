@@ -29,7 +29,7 @@ from drf_yasg.utils import swagger_auto_schema
 @require_http_methods(['GET'])
 @check_access_token
 def members_list(request: HttpRequest, **kwargs):
-    profiles = [
+    members = [
         {
             "id": member.id,
             "name": member.name,
@@ -40,7 +40,7 @@ def members_list(request: HttpRequest, **kwargs):
         } for member in Member.objects.all()
     ]
 
-    return JsonResponse({'profiles': profiles,}, safe=False, status=200)
+    return JsonResponse({'members': members}, safe=False, status=200)
 
 
 @swagger_auto_schema(
@@ -60,13 +60,14 @@ def member_profile(request: HttpRequest, student_id: int, **kwargs):
         return JsonResponse({'error': 'ERR_INVALID_MEMBER_ID'}, status=400)
 
     return JsonResponse({
-        'id': member.id,
-        'name': member.name,
-        'state': member.state,
-        'role': member.role,
-        'message': member.message,
-        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default'
-    }, status=200)
+        "member" : {
+            'id': member.id,
+            'name': member.name,
+            'state': member.state,
+            'role': member.role,
+            'message': member.message,
+            'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default'
+    }}, status=200)
 
 
 @swagger_auto_schema(
@@ -93,18 +94,19 @@ def my_profile(request: HttpRequest, member: Member, **kwargs):
 @require_http_methods(['GET'])
 def get_my_profile(request: HttpRequest, member: Member):
     return JsonResponse({
-        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default',
-        'name': member.name,
-        'role': member.role,
-        'message': member.message,
+        "member": {
         'id': member.id,
+        'name': member.name,
+        'state': member.state,
+        'image': f'{settings.STORAGE_URL}/member-image/{member.id}' if member.image else f'{settings.STORAGE_URL}/member-image/default',
+        'message': member.message,
+        'role': member.role,
         'department': member.department,
         'phone': member.phone,
         'email': member.email,
-        'state': member.state,
         'joined_semester': member.joined_semester,
         'new': member.new,
-    }, status=200)
+    }}, status=200)
 
 
 @use_body('phone', 'email', 'message', 'image')

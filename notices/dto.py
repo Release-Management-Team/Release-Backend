@@ -2,23 +2,17 @@ from drf_yasg import openapi
 
 
 notice_schema = openapi.Schema(
-    type=openapi.TYPE_OBJECT,
-    properties={
-        "notice": openapi.Schema(
             type=openapi.TYPE_OBJECT,
             properties={
                 'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the notice'),
                 'title': openapi.Schema(type=openapi.TYPE_STRING, description='Title of the notice'),
                 'content': openapi.Schema(type=openapi.TYPE_STRING, description='Content of the notice'),
                 'date': openapi.Schema(type=openapi.TYPE_STRING, description='Date of the notice'),
-                'important': openapi.Schema(type=openapi.TYPE_STRING, description='Importance of the notice'),
+                'important': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Importance of the notice'),
                 'expired': openapi.Schema(type=openapi.TYPE_BOOLEAN, description='Whether the notice is expired')
             },
             required=['id', 'title', 'content', 'date', 'important', 'expired']
-        ),
-    },
-    required=["notice"]
-)
+        )
 
 
 # GET
@@ -64,7 +58,13 @@ class create_notice_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
-        schema=notice_schema,
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'notice': notice_schema
+            },
+            required=['notice']
+        ),
         examples={
             "application/json": {
                 "notice": {
@@ -93,7 +93,13 @@ class get_notice_dto:
     
     response_200 = openapi.Response(
         description="Successful response",
-        schema=notice_schema,
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'notice': notice_schema
+            },
+            required=['notice']
+        ),
         examples={
             "application/json": {
                 "notice": {
@@ -132,7 +138,13 @@ class update_notice_dto:
 
     response_200 = openapi.Response(
         description="Successful response",
-        schema=notice_schema,
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'notice': notice_schema
+            },
+            required=['notice']
+        ),
         examples={
             "application/json": {
                 "notice": {

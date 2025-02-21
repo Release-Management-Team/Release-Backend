@@ -24,7 +24,7 @@ class BookTestCase(TestCase):
 
     def test_getting_book_info(self):
         response = self.client.get('/book/1' , headers=self.headers)
-        data = response.json()
+        data = response.json().get('book')
         self.assertEqual(data['title'], 'Operating System Concept')
         self.assertEqual(response.status_code, 200)
 
