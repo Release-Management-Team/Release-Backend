@@ -169,3 +169,34 @@ class delete_notice_dto:
             "application/json": {}
         }
     )
+
+
+class get_important_notice_list_dto:
+    request_param = []
+    
+
+
+    response_200 = openapi.Response(
+        description="Successful response",
+        schema=openapi.Schema(
+            type=openapi.TYPE_ARRAY, 
+            items=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                            'id': openapi.Schema(type=openapi.TYPE_INTEGER, description='ID of the notice'),
+                            'title': openapi.Schema(type=openapi.TYPE_STRING, description='Title of the notice'),
+                        },
+                required=['id', 'title']
+            )),
+
+        examples={
+            "application/json": [{
+                "id": 1,
+                "title": "title1",
+            },
+            {
+                "id": 2,
+                "title": "title2",
+            }]
+        }
+    )

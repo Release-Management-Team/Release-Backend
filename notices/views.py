@@ -150,4 +150,20 @@ def delete_notice(request, **kwargs):
     notice.delete()
 
     return JsonResponse({}, status=200)
-    
+
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=get_important_notice_list_dto.request_param,
+    responses={200: get_important_notice_list_dto.response_200}    
+)
+@api_view(['GET'])
+@check_access_token
+def get_important_notices(request, **kwargs):
+    notices = [
+        {
+            "id": notice.id,
+            'title': notice.title,
+        } for notice in Notice.objects.filter(important=True, expired=False)
+    ]
+    return JsonResponse({"notices": notices})
