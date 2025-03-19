@@ -22,12 +22,12 @@ def check_access_token(func):
         token = request.headers.get('Access')[7:]
 
         try:
-           payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
         except:
-            return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
+            return JsonResponse({'error': 'failed to decode token'}, status=401)
         
         if payload['token_type'] != 'ACCESS' or payload['exp'] < int(datetime.datetime.now().timestamp()):
-            return JsonResponse({'error': 'ERR_INVALID_TOKEN'}, status=401)
+            return JsonResponse({'error': 'token is expired or is not access token'}, status=401)
 
         return func(request, **kwargs, id=payload['id'])
     
