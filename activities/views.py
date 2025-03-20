@@ -6,6 +6,15 @@ from utils.decorators import use_body
 from jwt_auth.decorators import check_access_token, use_member
 from django.views.decorators.csrf import csrf_exempt
 
+from .serializers import *
+from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+
+@swagger_auto_schema(
+    method='get',
+    responses={200: get_activity_list_response_serializer}    
+)
+@api_view(['GET'])
 @require_http_methods(['GET'])
 @check_access_token
 def activity_view(request: HttpRequest, **kwargs):
@@ -13,6 +22,20 @@ def activity_view(request: HttpRequest, **kwargs):
 
 
 @csrf_exempt
+@swagger_auto_schema(
+    method='get',
+    responses={200: get_activity_response_serializer}    
+)
+@swagger_auto_schema(
+    method='patch',
+    request_body=update_activity_serializer,
+    responses={200: update_activity_response_serializer}    
+)
+@swagger_auto_schema(
+    method='delete',
+    responses={200: delete_activity_response_serializer}    
+)
+@api_view(['GET', 'PATCH', 'DELETE'])
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
 @check_access_token
 def activity_detail_view(request: HttpRequest, activity_id: int, **kwargs):
@@ -29,12 +52,24 @@ def activity_detail_view(request: HttpRequest, activity_id: int, **kwargs):
         return delete_activity(activity)
 
 @csrf_exempt
+@swagger_auto_schema(
+    method='post',
+    request_body=create_activity_serializer,
+    responses={200: create_activity_response_serializer}    
+)
+@api_view(['POST'])
 @require_http_methods(['POST'])
 @check_access_token
 def project_view(request: HttpRequest, **kwargs):
     return create_activity(request, info=0, **kwargs)
 
 @csrf_exempt
+@swagger_auto_schema(
+    method='post',
+    request_body=create_activity_serializer,
+    responses={200: create_activity_response_serializer}    
+)
+@api_view(['POST'])
 @require_http_methods(['POST'])
 @check_access_token
 def study_view(request: HttpRequest, **kwargs):
@@ -48,7 +83,7 @@ def get_activity_list():
             'title': activity.title,
             'leader': activity.leader.name,
             'image': activity.image,
-            'type': activity.info,
+            'info': activity.info,
             'state': activity.state,
         }
         for activity in Activity.objects.all()
@@ -64,21 +99,21 @@ def get_activity_detail(activity: Activity):
         'leader': activity.leader.name,
         'image': activity.image,
         'link': activity.link,
-        'type': activity.info,
+        'info': activity.info,
         'state': activity.state,
     }
     return JsonResponse(activity, status=200)
 
 @use_member
-@use_body('title', 'state', 'content', 'leader', 'link')
+@use_body('title', 'state', 'content', 'link')
 def create_activity(reqeust, info: int, body, member, **kwargs):
     activity = Activity.objects.create(
         title = body['title'],
+        content = body['content'],
+        link = body['link'],
+        leader = member,
         info = info,
         state = body['state'],
-        content = body['content'],
-        leader = member,
-        link = body['link']
     )
 
     activity = {
