@@ -42,3 +42,49 @@ class update_activity_response_serializer(serializers.ModelSerializer):
 
 class delete_activity_response_serializer(serializers.Serializer):
     message=serializers.CharField()
+
+
+
+
+
+
+class get_event_list_response_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'start_time', 'place']
+
+
+
+class get_event_response_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'content', 'start_time', 'place']
+
+
+class create_event_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['title', 'content', 'place', 'start_time']
+
+class create_event_response_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'content', 'start_time', 'place']
+
+
+
+class update_event_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['title', 'content', 'place', 'start_time']
+
+
+
+class update_event_response_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'content', 'start_time', 'place']
+
+
+class delete_event_response_serializer(serializers.Serializer):
+    message=serializers.CharField()

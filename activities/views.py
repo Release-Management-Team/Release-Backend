@@ -162,6 +162,17 @@ def delete_activity(activity: Activity):
 #    From now, Events on    #
 #############################
 
+
+@swagger_auto_schema(
+    method='get',
+    responses={200: get_event_list_response_serializer}    
+)
+@swagger_auto_schema(
+    method='post',
+    request_body=create_event_serializer,
+    responses={200: create_event_response_serializer}    
+)
+@api_view(['GET', 'POST'])
 @require_http_methods(['GET', 'POST'])
 @check_access_token
 def event_view(request: HttpRequest, **kwargs):
@@ -170,6 +181,22 @@ def event_view(request: HttpRequest, **kwargs):
     else:
         return create_event(request)
 
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={200: get_event_response_serializer}    
+)
+@swagger_auto_schema(
+    method='patch',
+    request_body=update_event_serializer,
+    responses={200: update_event_response_serializer}    
+)
+@swagger_auto_schema(
+    method='delete',
+    responses={200: delete_event_response_serializer}    
+)
+@api_view(['GET', 'PATCH', 'DELETE'])
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
 @check_access_token
 def event_detail_view(request: HttpRequest, event_id: int, **kwargs):
@@ -181,7 +208,7 @@ def event_detail_view(request: HttpRequest, event_id: int, **kwargs):
     if request.method == 'GET':
         return get_event(event)
     elif request.method == 'PATCH':
-        return update_event(request, event)
+        return update_event(request, event=event)
     else:
         return delete_event(event)
 
@@ -196,7 +223,7 @@ def get_event_list():
         }
         for event in Event.objects.all()
     ]
-    return JsonResponse(events, status=200)
+    return JsonResponse(events, status=200, safe=False)
 
 
 def get_event(event: Event):
@@ -210,12 +237,13 @@ def get_event(event: Event):
     return JsonResponse(event, status=200)
 
 
-@use_body('title', 'content', 'place')
+@use_body('title', 'content', 'place', 'start_time')
 def create_event(request: HttpRequest, body, **kwargs):
     event = Event.objects.create(
         title=body.get('title'),
         content=body.get('content'),
-        place=body.get('place')
+        place=body.get('place'),
+        start_time= body.get('start_time')
     ) 
 
     event = {
@@ -228,11 +256,12 @@ def create_event(request: HttpRequest, body, **kwargs):
     return JsonResponse(event, status=201)
 
 
-@use_body('title', 'content', 'place')
+@use_body('title', 'content', 'place', 'start_time')
 def update_event(request: HttpRequest, event: Event, body, **kwargs):
     event.title = body.get('title')
     event.content = body.get('content')
     event.place = body.get('place')
+    event.start_time = body.get('start_time')
     event.save()
 
     event = {
